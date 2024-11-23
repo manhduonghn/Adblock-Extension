@@ -77,6 +77,6 @@ function monitorAds() {
   });
 }
 
-// Launch function as soon as page loads
+// Run the script immediately
 removeAds();
 monitorAds();
