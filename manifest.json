@@ -59,12 +59,12 @@
       {
         "id": "default_rules",
         "enabled": true,
-        "path": "rules.json"
+        "path": "rules/rules.json"
       },
       {
         "id": "custom_rules",
         "enabled": true,
-        "path": "custom_rules.json"
+        "path": "rules/custom_rules.json"
       }
     ]
   },
