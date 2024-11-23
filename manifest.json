@@ -17,13 +17,18 @@
       "js": ["scripts/youtube.js"]
     },
     {
+      "matches": ["*://phimmoichilltv.net/*"],
+      "js": ["scripts/phimmoichill.js"],
+      "run_at": "document_start"
+    },
+    {
       "matches": ["<all_urls>"],
       "exclude_matches": ["http://localhost/*", "https://localhost/*"],
       "js": ["content.js"],
       "run_at": "document_start"
     }
   ],
-  "host_permissions": ["*://*/*"],
+  "host_permissions": [ "*://*/*" ],
   "declarative_net_request": {
     "rule_resources": [
       {
