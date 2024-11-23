@@ -31,5 +31,11 @@
         "path": "rules.json"
       }
     ]
-  }
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["custom_rules/block_list.txt"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
