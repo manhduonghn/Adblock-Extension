@@ -1,4 +1,4 @@
-async function removeAds() {
+function removeAds() {
   const elementsToHide = [
     '#headermbads',
     '#botplayeradsmb',
@@ -71,12 +71,23 @@ async function removeAds() {
 
 function monitorAds() {
   const observer = new MutationObserver(removeAds);
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
+
+  // Check if DOM is ready
+  function startObserver() {
+    if (document.body) {
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+      removeAds(); // Remove ads immediately
+    } else {
+      // If `document.body` does not exist, try again later
+      setTimeout(startObserver, 50);
+    }
+  }
+
+  startObserver();
 }
 
-// Run the script immediately
-removeAds();
+// Run script
 monitorAds();
