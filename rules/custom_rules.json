@@ -1,1 +1,37 @@
-
+[
+  {
+    "id": 41508,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/v/*/vast.js",
+      "resourceTypes": ["script"],
+      "excludedDomains": ["cdn2.kenhvn2.com"]
+    }
+  },
+  {
+    "id": 41509,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "||tvphim.li/ads/popup",
+      "resourceTypes": ["script"],
+      "excludedDomains": ["third-party"]
+    }
+  },
+  {
+    "id": 41510,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/ads/*.gif",
+      "resourceTypes": ["image"]
+    }
+  }
+]
