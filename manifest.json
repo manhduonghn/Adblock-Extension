@@ -40,6 +40,11 @@
       "run_at": "document_start"
     },
     {
+      "matches": ["*://truyensex.moe/*", "*://truyensextv1.com/*"],
+      "js": ["scripts/truyensex.js"],
+      "run_at": "document_start"
+    },
+    {
       "matches": ["<all_urls>"],
       "exclude_matches": ["http://localhost/*", "https://localhost/*"],
       "js": ["content.js"],
