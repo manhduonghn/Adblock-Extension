@@ -30,7 +30,7 @@ jobs:
       run: echo "DATE=$(date +%F )" >> $GITHUB_ENV
        
     - name: Release script 
-      uses: softprops/action-gh-release@v1
+      uses: softprops/action-gh-release@v2
       with:
         files: Adblock.crx
         name: Extension ${{ env.DATE }}
@@ -47,7 +47,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Delete workflow runs
-      uses: Mattraks/delete-workflow-runs@v2.1.0
+      uses: Mattraks/delete-workflow-runs@v2
       with:
         token: ${{ github.token }}
         repository: ${{ github.repository }}
