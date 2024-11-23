@@ -19,7 +19,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16'  # Chọn phiên bản Node.js bạn muốn
+        node-version: '16'
 
     - name: Install dependencies
       run: |
@@ -27,7 +27,6 @@ jobs:
 
     - name: Package the Chrome Extension
       run: |
-        # Đóng gói extension thành CRX mà không cần mật khẩu
         crx pack ./ -o ./my-extension.crx
 
   create-release:
@@ -48,11 +47,33 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Create GitHub Release
-      id: create_release
-      uses: softprops/action-gh-release@v1
+    - name: Create GitHub Release and Upload CRX using github-script
+      uses: octokit/github-script@v6
       with:
-        files: ./my-extension.crx
-        tag_name: ${{ steps.create_tag.outputs.tag_name }}  # Dùng tag vừa tạo
+        script: |
+          const tagName = 'v${{ steps.create_tag.outputs.tag_name }}';  // Dùng tag vừa tạo
+          const releaseName = `Release ${tagName}`;
+          const releaseBody = 'Release version with the latest build of the extension.';
+          
+          // Tạo Release mới
+          const release = await github.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: tagName,
+            name: releaseName,
+            body: releaseBody,
+          });
+
+          // Upload tệp .crx vào Release
+          await github.repos.uploadReleaseAsset({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            release_id: release.data.id,
+            name: 'my-extension.crx',
+            data: require('fs').createReadStream('./my-extension.crx'),
+            headers: {
+              'content-type': 'application/zip', // Đảm bảo đúng loại MIME type
+            },
+          });
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
