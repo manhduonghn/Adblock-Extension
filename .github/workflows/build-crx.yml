@@ -14,10 +14,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@main
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@main
       with:
         node-version: '16'
 
@@ -48,7 +48,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Create GitHub Release and Upload CRX using github-script
-      uses: octokit/github-script@v6
+      uses: github-script@main
       with:
         script: |
           const tagName = 'v${{ steps.create_tag.outputs.tag_name }}';  // Dùng tag vừa tạo
