@@ -14,10 +14,10 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@main
+      uses: actions/checkout@v2
 
     - name: Set up Node.js
-      uses: actions/setup-node@main
+      uses: actions/setup-node@v2
       with:
         node-version: '16'
 
@@ -34,7 +34,7 @@ jobs:
     needs: build
     steps:
     - name: Checkout repository
-      uses: actions/checkout@main
+      uses: actions/checkout@v2
 
     - name: Create Tag
       id: create_tag
@@ -47,14 +47,35 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Delete old workflows and releases
+      run: |
+        # Delete old workflows in .github/workflows folder
+        rm -rf .github/workflows/*
+        echo "Deleted old workflows."
+
+        # Fetch releases and delete older releases (if needed)
+        releases=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          "https://api.github.com/repos/${{ github.repository }}/releases" | jq -r '.[].id')
+        
+        # Keep only the latest release
+        for release in $releases; do
+          if [[ "$release" != "$(echo $releases | head -n 1)" ]]; then
+            echo "Deleting release with ID: $release"
+            curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              "https://api.github.com/repos/${{ github.repository }}/releases/$release"
+          fi
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Create GitHub Release and Upload CRX using github-script
-      uses: github-script@main
+      uses: github-script@v6
       with:
         script: |
           const tagName = 'v${{ steps.create_tag.outputs.tag_name }}';  // Dùng tag vừa tạo
           const releaseName = `Release ${tagName}`;
           const releaseBody = 'Release version with the latest build of the extension.';
-          
+
           // Tạo Release mới
           const release = await github.repos.createRelease({
             owner: context.repo.owner,
