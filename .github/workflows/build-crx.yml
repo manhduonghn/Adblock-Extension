@@ -3,10 +3,10 @@ name: Build CRX and Create Release
 on:
   push:
     branches:
-      - main  # Hoặc bạn có thể thay đổi thành branch khác nếu muốn
+      - main
   pull_request:
     branches:
-      - main  # Khi có PR trên branch chính
+      - main
 
 jobs:
   build:
@@ -23,7 +23,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        npm install -g crx  # Cài đặt công cụ crx (không cần mật khẩu)
+        npm install -g crx  # Cài đặt công cụ crx
 
     - name: Package the Chrome Extension
       run: |
@@ -39,27 +39,27 @@ jobs:
     - name: Create Tag
       id: create_tag
       run: |
-        # Lấy số phiên bản (ví dụ: v1.0.0 hoặc v1.1.0)
-        TAG_NAME="v$(date +'%Y.%m.%d')"
+        TAG_NAME="v$(date +'%Y.%m.%d')"  # Lấy phiên bản theo ngày
         echo "Creating tag: $TAG_NAME"
         git tag $TAG_NAME
         git push origin $TAG_NAME
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Delete old workflows and releases
+    - name: Delete old workflows
       run: |
-        # Delete old workflows in .github/workflows folder
+        # Xoá các workflows cũ
         rm -rf .github/workflows/*
         echo "Deleted old workflows."
 
-        # Fetch releases and delete older releases (if needed)
+    - name: Delete old releases (keep only the latest one)
+      run: |
         releases=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           "https://api.github.com/repos/${{ github.repository }}/releases" | jq -r '.[].id')
-        
-        # Keep only the latest release
+
+        latest_release=$(echo "$releases" | head -n 1)  # Giữ lại release mới nhất
         for release in $releases; do
-          if [[ "$release" != "$(echo $releases | head -n 1)" ]]; then
+          if [[ "$release" != "$latest_release" ]]; then
             echo "Deleting release with ID: $release"
             curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
               "https://api.github.com/repos/${{ github.repository }}/releases/$release"
@@ -75,7 +75,7 @@ jobs:
           const tagName = 'v${{ steps.create_tag.outputs.tag_name }}';  // Dùng tag vừa tạo
           const releaseName = `Release ${tagName}`;
           const releaseBody = 'Release version with the latest build of the extension.';
-
+          
           // Tạo Release mới
           const release = await github.repos.createRelease({
             owner: context.repo.owner,
