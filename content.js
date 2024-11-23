@@ -1,6 +1,5 @@
 async function removeAds() {
-  var elementsToHide = [];
-  elementsToHide = [
+  const elementsToHide = [
     '#headermbads',
     '#botplayeradsmb',
     '[id*="mobiads"]',
@@ -71,17 +70,13 @@ async function removeAds() {
 }
 
 function monitorAds() {
-  const isYT = window.location.hostname.includes("youtube.com");
-  if (isYT) {
-    ytBlocker();
-  } else {
-    const observer = new MutationObserver(removeAds);
-    observer.observe(document.body, {
-      childList: true,
-      subtree: true,
-    });
-  }
+  const observer = new MutationObserver(removeAds);
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+  });
 }
 
+// Launch function as soon as page loads
 removeAds();
 monitorAds();
