@@ -30,6 +30,11 @@
       "run_at": "document_start"
     },
     {
+      "matches": ["*://*.vnexpress.net/*"],
+      "js": ["scripts/vnexpress.js"],
+      "run_at": "document_start"
+    },
+    {
       "matches": ["*://bongdaplus.vn/*"],
       "js": ["scripts/bongdaplus.js"],
       "run_at": "document_start"
