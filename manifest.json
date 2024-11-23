@@ -30,9 +30,14 @@
       "run_at": "document_start"
     },
     {
+      "matches": ["*://bongdaplus.vn/*"],
+      "js": ["scripts/bongdaplus.js"],
+      "run_at": "document_start"
+    },
+    {
       "matches": ["<all_urls>"],
       "exclude_matches": ["http://localhost/*", "https://localhost/*"],
-      "js": [ "content.js" ],
+      "js": ["content.js"],
       "run_at": "document_start"
     }
   ],
