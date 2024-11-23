@@ -3,14 +3,11 @@ name: Build CRX
 on:
   push:
     branches:
-      - main  # hoặc bạn có thể thay đổi thành branch khác nếu muốn
-  pull_request:
-    branches:
-      - main  # khi có PR trên branch chính
-
+      - main
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions: write-all
 
     steps:
     - name: Checkout repository
@@ -19,7 +16,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@main
       with:
-        node-version: '20'  # Chọn phiên bản Node.js bạn muốn
+        node-version: '20'
 
     - name: Install dependencies
       run: |
@@ -27,11 +24,32 @@ jobs:
 
     - name: Package the Chrome Extension
       run: |
-        # Đóng gói extension thành CRX mà không cần mật khẩu
-        crx pack ./ -o ./my-extension.crx
+        crx pack ./ -o ./Adblock.crx
 
-    - name: Upload CRX as Artifact
-      uses: actions/upload-artifact@main
+    - name: Generate date
+      run: echo "DATE=$(date +%F )" >> $GITHUB_ENV
+       
+    - name: Release script 
+      uses: softprops/action-gh-release@v1
       with:
-        name: my-extension.crx
-        path: ./my-extension.crx
+        files: Adblock.crx
+        name: Extension ${{ env.DATE }}
+        tag_name: ${{ env.DATE }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Delete older releases
+      uses: dev-drprasad/delete-older-releases@v0.2.1
+      with:
+        keep_latest: 1
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Delete workflow runs
+      uses: Mattraks/delete-workflow-runs@v2
+      with:
+        token: ${{ github.token }}
+        repository: ${{ github.repository }}
+        retain_days: 0
+        keep_minimum_runs: 1
