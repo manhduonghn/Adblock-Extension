@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
   "name": "AdBlock Extension",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Blocks ads without impacting performance.",
+  "author": "luxysiv",
   "permissions": ["declarativeNetRequest", "scripting"],
-  "author": "voidrlm",
   "background": {
     "service_worker": "background.js"
   },
@@ -13,9 +13,13 @@
   },
   "content_scripts": [
     {
+      "matches": ["*://*.youtube.com/*"],
+      "js": ["scripts/youtube.js"]
+    },
+    {
       "matches": ["<all_urls>"],
       "exclude_matches": ["http://localhost/*", "https://localhost/*"],
-      "js": ["scripts/youtube.js", "content.js"]
+      "js": ["content.js"]
     }
   ],
   "host_permissions": ["*://*/*"],
