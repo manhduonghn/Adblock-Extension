@@ -1,0 +1,39 @@
+name: Build CRX
+
+on:
+  push:
+    branches:
+      - main  # hoặc bạn có thể thay đổi thành branch khác nếu muốn
+  pull_request:
+    branches:
+      - main  # khi có PR trên branch chính
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js (needed for crx3 package)
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'  # Chọn phiên bản Node.js bạn muốn
+
+    - name: Install dependencies
+      run: |
+        npm install -g crx3  # cài đặt crx3, công cụ tạo CRX
+
+    - name: Package the Chrome Extension
+      run: |
+        # Tạo CRX từ thư mục chứa extension
+        crx3 pack ./ --password ${{ secrets.CRX_PASSWORD }} -o ./phimmoichill.crx
+        # Ghi tệp CRX vào artifacts của GitHub để tải về
+        echo "CRX file generated"
+        
+    - name: Upload CRX as Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: phimmoichill.crx
+        path: ./phimmoichill.crx
