@@ -18,9 +18,8 @@
       "type": "block"
     },
     "condition": {
-      "urlFilter": "||tvphim.li/ads/popup",
-      "resourceTypes": ["script"],
-      "excludedDomains": ["third-party"]
+      "urlFilter": "/ads/popup",
+      "resourceTypes": ["script"]
     }
   },
   {
