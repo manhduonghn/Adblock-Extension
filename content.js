@@ -1,10 +1,5 @@
 function removeAds() {
   const elementsToHide = [
-    '#headermbads',
-    '#botplayeradsmb',
-    '[id*="mobiads"]',
-    '[id*="an_catfish"]',
-    '[class="off-ads"]',
     '[class*="adswarning"]',
     '[class*="ad300"]',
     '[class*="adHeight"]',
