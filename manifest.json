@@ -45,6 +45,11 @@
       "run_at": "document_start"
     },
     {
+      "matches": ["*://tvphim.li/*"],
+      "js": ["scripts/tvphim.js"],
+      "run_at": "document_start"
+    },
+    {
       "matches": ["<all_urls>"],
       "exclude_matches": ["http://localhost/*", "https://localhost/*"],
       "js": ["content.js"],
