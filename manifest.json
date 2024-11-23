@@ -49,6 +49,11 @@
       "exclude_matches": ["http://localhost/*", "https://localhost/*"],
       "js": ["content.js"],
       "run_at": "document_start"
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["scripts/blockPopups.js"],
+      "run_at": "document_start"
     }
   ],
   "host_permissions": [
