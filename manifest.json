@@ -32,10 +32,7 @@
     {
       "matches": ["<all_urls>"],
       "exclude_matches": ["http://localhost/*", "https://localhost/*"],
-      "js": [
-        "content.js",
-        "popup-blocker.js"
-      ],
+      "js": [ "content.js" ],
       "run_at": "document_start"
     }
   ],
