@@ -1,12 +1,12 @@
-name: Build CRX and Create Release
+name: Build CRX
 
 on:
   push:
     branches:
-      - main
+      - main  # hoặc bạn có thể thay đổi thành branch khác nếu muốn
   pull_request:
     branches:
-      - main
+      - main  # khi có PR trên branch chính
 
 jobs:
   build:
@@ -14,87 +14,24 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@main
 
     - name: Set up Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@main
       with:
-        node-version: '16'
+        node-version: '20'  # Chọn phiên bản Node.js bạn muốn
 
     - name: Install dependencies
       run: |
-        npm install -g crx  # Cài đặt công cụ crx
+        npm install -g crx  # Cài đặt công cụ crx (không cần mật khẩu)
 
     - name: Package the Chrome Extension
       run: |
+        # Đóng gói extension thành CRX mà không cần mật khẩu
         crx pack ./ -o ./my-extension.crx
 
-  create-release:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Create Tag
-      id: create_tag
-      run: |
-        TAG_NAME="v$(date +'%Y.%m.%d')"  # Lấy phiên bản theo ngày
-        echo "Creating tag: $TAG_NAME"
-        git tag $TAG_NAME
-        git push origin $TAG_NAME
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Delete old workflows
-      run: |
-        # Xoá các workflows cũ
-        rm -rf .github/workflows/*
-        echo "Deleted old workflows."
-
-    - name: Delete old releases (keep only the latest one)
-      run: |
-        releases=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-          "https://api.github.com/repos/${{ github.repository }}/releases" | jq -r '.[].id')
-
-        latest_release=$(echo "$releases" | head -n 1)  # Giữ lại release mới nhất
-        for release in $releases; do
-          if [[ "$release" != "$latest_release" ]]; then
-            echo "Deleting release with ID: $release"
-            curl -X DELETE -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-              "https://api.github.com/repos/${{ github.repository }}/releases/$release"
-          fi
-        done
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Create GitHub Release and Upload CRX using github-script
-      uses: github-script@v6
+    - name: Upload CRX as Artifact
+      uses: actions/upload-artifact@main
       with:
-        script: |
-          const tagName = 'v${{ steps.create_tag.outputs.tag_name }}';  // Dùng tag vừa tạo
-          const releaseName = `Release ${tagName}`;
-          const releaseBody = 'Release version with the latest build of the extension.';
-          
-          // Tạo Release mới
-          const release = await github.repos.createRelease({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            tag_name: tagName,
-            name: releaseName,
-            body: releaseBody,
-          });
-
-          // Upload tệp .crx vào Release
-          await github.repos.uploadReleaseAsset({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            release_id: release.data.id,
-            name: 'my-extension.crx',
-            data: require('fs').createReadStream('./my-extension.crx'),
-            headers: {
-              'content-type': 'application/zip', // Đảm bảo đúng loại MIME type
-            },
-          });
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        name: my-extension.crx
+        path: ./my-extension.crx
