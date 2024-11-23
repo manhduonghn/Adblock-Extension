@@ -37,10 +37,22 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    - name: Create Tag
+      id: create_tag
+      run: |
+        # Lấy số phiên bản (ví dụ: v1.0.0 hoặc v1.1.0)
+        TAG_NAME="v$(date +'%Y.%m.%d')"
+        echo "Creating tag: $TAG_NAME"
+        git tag $TAG_NAME
+        git push origin $TAG_NAME
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Create GitHub Release
       id: create_release
       uses: softprops/action-gh-release@v1
       with:
         files: ./my-extension.crx
+        tag_name: ${{ steps.create_tag.outputs.tag_name }}  # Dùng tag vừa tạo
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
