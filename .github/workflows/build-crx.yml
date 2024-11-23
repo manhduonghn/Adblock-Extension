@@ -14,26 +14,24 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@main
 
-    - name: Set up Node.js (needed for crx3 package)
-      uses: actions/setup-node@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@main
       with:
-        node-version: '16'  # Chọn phiên bản Node.js bạn muốn
+        node-version: '20'  # Chọn phiên bản Node.js bạn muốn
 
     - name: Install dependencies
       run: |
-        npm install -g crx3  # cài đặt crx3, công cụ tạo CRX
+        npm install -g crx  # Cài đặt công cụ crx (không cần mật khẩu)
 
     - name: Package the Chrome Extension
       run: |
-        # Tạo CRX từ thư mục chứa extension
-        crx3 pack ./ --password ${{ secrets.CRX_PASSWORD }} -o ./phimmoichill.crx
-        # Ghi tệp CRX vào artifacts của GitHub để tải về
-        echo "CRX file generated"
-        
+        # Đóng gói extension thành CRX mà không cần mật khẩu
+        crx pack ./ -o ./my-extension.crx
+
     - name: Upload CRX as Artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@main
       with:
-        name: phimmoichill.crx
-        path: ./phimmoichill.crx
+        name: my-extension.crx
+        path: ./my-extension.crx
