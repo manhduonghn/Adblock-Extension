@@ -1,4 +1,4 @@
-const filePath = chrome.runtime.getURL("custom_rules/voidrlm_block_list.txt");
+const filePath = chrome.runtime.getURL("custom_rules/block_list.txt");
 
 fetch(filePath)
   .then((response) => response.text())
