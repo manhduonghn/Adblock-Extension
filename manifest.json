@@ -13,10 +13,6 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.youtube.com/*"],
-      "js": ["scripts/youtube.js"]
-    },
-    {
       "matches": [
         "*://phimnhanhz.com/*",
         "*://linkads.xyz/*"
