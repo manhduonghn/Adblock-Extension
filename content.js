@@ -1,5 +1,7 @@
 function removeAds() {
   const elementsToHide = [
+    '[id*="an_catfish"]',
+    '[class="off-ads"]',
     '[class*="adswarning"]',
     '[class*="ad300"]',
     '[class*="adHeight"]',
