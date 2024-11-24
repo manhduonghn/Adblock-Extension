@@ -32,5 +32,27 @@
       "urlFilter": "/ads/*.gif",
       "resourceTypes": ["image"]
     }
+  },
+  {
+    "id": 41511,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/newchill/*gif",
+      "resourceTypes": ["image"]
+    }
+  },
+  {
+    "id": 41512,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "urlFilter": "/newchill/",
+      "resourceTypes": ["script"]
+    }
   }
 ]
