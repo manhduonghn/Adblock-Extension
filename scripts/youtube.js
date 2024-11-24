@@ -16,7 +16,8 @@ const cssSelectors = [
     'ytm-companion-ad-renderer',
     'ad-slot-renderer',
     '.yt-playability-error-supported-renderers',
-    'tp-yt-paper-dialog:has(#feedback.ytd-enforcement-message-view-model)'
+    'tp-yt-paper-dialog:has(#feedback.ytd-enforcement-message-view-model)',
+    'ytd-reel-video-renderer:has(.ytd-ad-slot-renderer)' // Xử lý quảng cáo trong Shorts
 ];
 
 const skipButtonSelectors = [
@@ -39,7 +40,7 @@ function injectCSS() {
 
 injectCSS(); // Inject CSS immediately
 
-// Check and handle ads on YouTube
+// Check and handle ads on YouTube, including Shorts
 function checkAndHandleAds() {
     const player = document.querySelector('.html5-video-player');
     const skipButton = document.querySelector(skipButtonSelectors.join(', '));
@@ -59,6 +60,12 @@ function checkAndHandleAds() {
             video.addEventListener('mouseup', allowPauseVideo);
         }
     }
+
+    // Remove ads in Shorts
+    const adShortVideos = document.querySelectorAll(
+        'ytd-reel-video-renderer:has(.ytd-ad-slot-renderer)'
+    );
+    adShortVideos.forEach((adShort) => adShort.remove());
 
     // Handle adblocker warnings
     const adBlockerWarningDialog = document.querySelector(
