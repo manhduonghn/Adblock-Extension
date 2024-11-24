@@ -27,6 +27,14 @@ jobs:
 
     - name: Generate date
       run: echo "DATE=$(date +%F )" >> $GITHUB_ENV
+
+    - name: Delete older releases
+      uses: dev-drprasad/delete-older-releases@v0.3.4
+      with:
+        keep_latest: 0
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
        
     - name: Release script 
       uses: softprops/action-gh-release@v2
@@ -34,14 +42,6 @@ jobs:
         files: Adblock.crx
         name: Extension ${{ env.DATE }}
         tag_name: ${{ env.DATE }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    - name: Delete older releases
-      uses: dev-drprasad/delete-older-releases@v0.3.4
-      with:
-        keep_latest: 1
-        delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
