@@ -17,11 +17,6 @@
       "js": ["scripts/youtube.js"]
     },
     {
-      "matches": ["*://phimmoichilltv.net/*"],
-      "js": ["scripts/phimmoichill.js"],
-      "run_at": "document_start"
-    },
-    {
       "matches": [
         "*://phimnhanhz.com/*",
         "*://linkads.xyz/*"
