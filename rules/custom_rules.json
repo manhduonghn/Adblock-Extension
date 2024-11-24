@@ -56,15 +56,16 @@
     }
   },
   {
-    "id": 41513,
-    "priority": 1,
-    "action": {
-      "type": "block"
-    },
-    "condition": {
-      "regexFilter": "^https:\\/\\/[a-z-]{6,15}\\.(?:com|net|tv|xyz)\\/(?:40[01]|50?0?)\\/\\d{6,7}\\??\\S*$",
-      "resourceTypes": ["script", "xmlhttprequest"],
-      "domainType": "thirdParty"
+  "id": 41513,
+  "priority": 1,
+  "action": {
+    "type": "block"
+  },
+  "condition": {
+    "regexFilter": "^https:\\/\\/[a-z-]{6,15}\\.(?:com|net|tv|xyz)\\/(?:40[01]|50?0?)\\/\\d{6,7}\\??\\S*$",
+    "resourceTypes": ["script", "xmlhttprequest"],
+    "domainType": "thirdParty",
+    "excludedDomains": ["linkads.xyz"]
     }
   },
   {
