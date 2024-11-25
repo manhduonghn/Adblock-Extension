@@ -90,5 +90,16 @@
       "resourceTypes": ["script"],
       "domainType": "thirdParty"
     }
+  },
+  {
+    "id": 41516,
+    "priority": 1,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "*://linkads.xyz/*",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "stylesheet"]
+    }
   }
 ]
