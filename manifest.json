@@ -7,8 +7,6 @@
   "permissions": [
     "declarativeNetRequest",
     "scripting",
-    "webRequest",
-    "webRequestBlocking",
     "tabs"
   ],
   "background": {
