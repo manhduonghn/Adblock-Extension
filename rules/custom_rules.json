@@ -1,7 +1,18 @@
 [
   {
-    "id": 41508,
+    "id": 41516,
     "priority": 1,
+    "action": {
+      "type": "allow"
+    },
+    "condition": {
+      "urlFilter": "*://linkads.xyz/*",
+      "resourceTypes": ["script", "image", "xmlhttprequest", "stylesheet"]
+    }
+  },
+  {
+    "id": 41508,
+    "priority": 2,
     "action": {
       "type": "block"
     },
@@ -13,7 +24,7 @@
   },
   {
     "id": 41509,
-    "priority": 1,
+    "priority": 2,
     "action": {
       "type": "block"
     },
@@ -24,7 +35,7 @@
   },
   {
     "id": 41510,
-    "priority": 1,
+    "priority": 2,
     "action": {
       "type": "block"
     },
@@ -35,7 +46,7 @@
   },
   {
     "id": 41511,
-    "priority": 1,
+    "priority": 2,
     "action": {
       "type": "block"
     },
@@ -46,7 +57,7 @@
   },
   {
     "id": 41512,
-    "priority": 1,
+    "priority": 2,
     "action": {
       "type": "block"
     },
@@ -57,7 +68,7 @@
   },
   {
     "id": 41513,
-    "priority": 1,
+    "priority": 2,
     "action": {
       "type": "block"
     },
@@ -69,7 +80,7 @@
   },
   {
     "id": 41514,
-    "priority": 1,
+    "priority": 2,
     "action": {
       "type": "block"
     },
@@ -81,7 +92,7 @@
   },
   {
     "id": 41515,
-    "priority": 1,
+    "priority": 2,
     "action": {
       "type": "block"
     },
@@ -89,17 +100,6 @@
       "regexFilter": "^https:\\/\\/[a-z]{8,15}\\.(?:com|net)\\/(?:\\d{1,3}\\/)?tag\\.min\\.js$",
       "resourceTypes": ["script"],
       "domainType": "thirdParty"
-    }
-  },
-  {
-    "id": 41516,
-    "priority": 1,
-    "action": {
-      "type": "allow"
-    },
-    "condition": {
-      "urlFilter": "*://linkads.xyz/*",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "stylesheet"]
     }
   }
 ]
