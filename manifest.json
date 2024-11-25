@@ -57,25 +57,5 @@
   ],
   "host_permissions": [
     "*://*/*"
-  ],
-  "declarative_net_request": {
-    "rule_resources": [
-      {
-        "id": "default_rules",
-        "enabled": true,
-        "path": "rules/rules.json"
-      },
-      {
-        "id": "custom_rules",
-        "enabled": true,
-        "path": "rules/custom_rules.json"
-      }
-    ]
-  },
-  "web_accessible_resources": [
-    {
-      "resources": ["custom_rules/block_list.txt"],
-      "matches": ["<all_urls>"]
-    }
   ]
 }
