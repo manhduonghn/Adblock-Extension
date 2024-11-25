@@ -7,7 +7,9 @@
   "permissions": [
     "declarativeNetRequest",
     "scripting",
-    "storage"
+    "webRequest",
+    "webRequestBlocking",
+    "tabs"
   ],
   "background": {
     "service_worker": "background.js"
