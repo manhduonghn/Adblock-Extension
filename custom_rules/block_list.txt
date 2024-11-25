@@ -1,1 +1,1 @@
-vnexpress.net
+^https?:\/\/(www\.)?vnexpress\.net\/.*
