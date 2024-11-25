@@ -16,9 +16,14 @@ async function loadBlockList() {
 // Chặn các URL khớp với danh sách
 chrome.webRequest.onBeforeRequest.addListener(
   function(details) {
-    if (blockList.some(rule => details.url.includes(rule))) {
-      console.log(`Chặn URL: ${details.url}`);
-      return { cancel: true };
+    // Kiểm tra nếu URL khớp với bất kỳ rule nào trong blockList
+    for (let rule of blockList) {
+      // Sử dụng biểu thức chính quy để so khớp URL
+      const regex = new RegExp(rule, "i"); // "i" là chế độ không phân biệt hoa/thường
+      if (regex.test(details.url)) {
+        console.log(`Chặn URL: ${details.url}`);
+        return { cancel: true };
+      }
     }
     return { cancel: false };
   },
