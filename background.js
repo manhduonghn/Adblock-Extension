@@ -1,23 +1,31 @@
-fetch(
-  "https://raw.githubusercontent.com/luxysiv/Adblock-extension/main/custom_rules/block_list.txt"
-)
-  .then((response) => response.text())
-  .then((text) => {
-    const urlFilters = text
-      .split("\n")
-      .filter((line) => line && !line.startsWith("!") && !line.startsWith("["))
-      .map((line) => line.trim());
+let blockList = [];
 
-    const rules = urlFilters.map((filter, index) => ({
-      id: index + 1,
-      priority: 1,
-      action: { type: "block" },
-      condition: { urlFilter: filter },
-    }));
+// Hàm tải danh sách chặn từ tệp custom_rules.txt
+async function loadBlockList() {
+  try {
+    // Đọc tệp từ thư mục custom_rules
+    const response = await fetch(chrome.runtime.getURL("custom_rules/block_list.txt"));
+    const text = await response.text();
+    blockList = text.split("\n").map(line => line.trim()).filter(line => line); // Loại bỏ dòng trống
+    console.log("Danh sách chặn đã tải:", blockList);
+  } catch (error) {
+    console.error("Không thể tải danh sách chặn:", error);
+  }
+}
 
-    chrome.declarativeNetRequest.updateDynamicRules({
-      addRules: rules,
-      removeRuleIds: rules.map((rule) => rule.id),
-    });
-  })
-  .catch((error) => console.error("Error fetching adblock list:", error));
+// Chặn các URL khớp với danh sách
+chrome.webRequest.onBeforeRequest.addListener(
+  function(details) {
+    if (blockList.some(rule => details.url.includes(rule))) {
+      console.log(`Chặn URL: ${details.url}`);
+      return { cancel: true };
+    }
+    return { cancel: false };
+  },
+  { urls: ["<all_urls>"] },
+  ["blocking"]
+);
+
+// Tải danh sách chặn khi extension khởi động
+chrome.runtime.onStartup.addListener(loadBlockList);
+chrome.runtime.onInstalled.addListener(loadBlockList);
