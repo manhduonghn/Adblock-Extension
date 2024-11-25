@@ -1,16 +1,5 @@
 [
   {
-    "id": 41516,
-    "priority": 1,
-    "action": {
-      "type": "allow"
-    },
-    "condition": {
-      "urlFilter": "*://phimnhanhz.com/*linkads.xyz/*",
-      "resourceTypes": ["script", "image", "xmlhttprequest", "stylesheet"]
-    }
-  },
-  {
     "id": 41508,
     "priority": 1,
     "action": {
