@@ -4,20 +4,35 @@ let blockList = [];
 async function loadBlockList() {
   try {
     // Đọc tệp từ thư mục custom_rules hoặc tải từ URL công cộng (ví dụ EasyList)
-    const response = await fetch("https://easylist.to/easylist/easylist.txt");  // URL của EasyList hoặc một danh sách khác
+    const response = await fetch(chrome.runtime.getURL("custom_rules/block_list.txt"));  // Đọc từ tệp trong extension
     const text = await response.text();
-    blockList = text.split("\n").map(line => line.trim()).filter(line => line && !line.startsWith("!")); // Loại bỏ dòng chú thích
+    
+    // Xử lý từng dòng trong tệp và loại bỏ các dòng trống hoặc chú thích
+    blockList = text.split("\n").map(line => line.trim()).filter(line => line && !line.startsWith("!")); 
+    
     console.log("Danh sách chặn đã tải:", blockList);
 
-    // Chuyển đổi blockList thành định dạng của declarativeNetRequest với ID duy nhất
-    const rules = blockList.map((rule, index) => ({
-      id: `easylist_${index}`,  // Thêm tiền tố để đảm bảo ID duy nhất
-      action: { type: "block" },
-      condition: {
-        urlFilter: rule,
-        resourceTypes: ["main_frame", "sub_frame", "script", "image", "stylesheet"]
+    // Chuyển đổi danh sách thành các quy tắc cho declarativeNetRequest
+    const rules = blockList.map((rule, index) => {
+      // Kiểm tra nếu rule là một URL hay tên miền, nếu có "http", thì đây là URL
+      let urlFilter;
+      if (rule.startsWith("http") || rule.startsWith("www")) {
+        // Chuyển đổi URL sang biểu thức chính quy
+        urlFilter = `^https?:\/\/.*${rule.replace(/^https?:\/\//, '').replace(/\//g, '\\/').replace(/\./g, '\\.')}$`;
+      } else {
+        // Nếu chỉ là tên miền, tạo biểu thức chính quy cho tên miền này
+        urlFilter = `^https?:\/\/.*${rule.replace(/\./g, '\\.').replace(/\//g, '\\/').replace(/^www\./, '')}$`;
       }
-    }));
+
+      return {
+        id: `rule_${index}`,  // ID duy nhất cho từng quy tắc
+        action: { type: "block" },
+        condition: {
+          urlFilter: urlFilter,
+          resourceTypes: ["main_frame", "sub_frame", "script", "image", "stylesheet"]
+        }
+      };
+    });
 
     // Áp dụng các quy tắc chặn
     chrome.declarativeNetRequest.updateDynamicRules({
