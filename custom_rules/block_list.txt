@@ -64,3 +64,4 @@
 ||notes-analytics-events.apple.com^
 ||smetrics.samsung.com^
 ||analytics-api.samsunghealthcn.com^
+||vnexpress.net^
