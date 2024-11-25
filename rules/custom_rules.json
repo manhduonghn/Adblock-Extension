@@ -6,13 +6,13 @@
       "type": "allow"
     },
     "condition": {
-      "urlFilter": "*://linkads.xyz/*",
+      "urlFilter": "*://phimnhanhz.com/*linkads.xyz/*",
       "resourceTypes": ["script", "image", "xmlhttprequest", "stylesheet"]
     }
   },
   {
     "id": 41508,
-    "priority": 2,
+    "priority": 1,
     "action": {
       "type": "block"
     },
@@ -24,7 +24,7 @@
   },
   {
     "id": 41509,
-    "priority": 2,
+    "priority": 1,
     "action": {
       "type": "block"
     },
@@ -35,7 +35,7 @@
   },
   {
     "id": 41510,
-    "priority": 2,
+    "priority": 1,
     "action": {
       "type": "block"
     },
@@ -46,7 +46,7 @@
   },
   {
     "id": 41511,
-    "priority": 2,
+    "priority": 1,
     "action": {
       "type": "block"
     },
@@ -57,7 +57,7 @@
   },
   {
     "id": 41512,
-    "priority": 2,
+    "priority": 1,
     "action": {
       "type": "block"
     },
@@ -68,7 +68,7 @@
   },
   {
     "id": 41513,
-    "priority": 2,
+    "priority": 1,
     "action": {
       "type": "block"
     },
@@ -80,7 +80,7 @@
   },
   {
     "id": 41514,
-    "priority": 2,
+    "priority": 1,
     "action": {
       "type": "block"
     },
@@ -92,7 +92,7 @@
   },
   {
     "id": 41515,
-    "priority": 2,
+    "priority": 1,
     "action": {
       "type": "block"
     },
