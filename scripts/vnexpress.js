@@ -1,48 +1,65 @@
-// CSS rules to hide adblock button, overlay, and additional ad sections
-const css = `
-    .ads,
-    .mb20,
-    .wrap,
-    .gopy-vne,
-    .list-link,
-    .banner-ads,
-    .article_ads,
-    .button-adblock,
-    .guitoasoan_btn,
-    .wrap-hd-adblock,
-    .section-ads-top,
-    .icon-podcast-pin,
-    .slide-banner-ads,
-    .box-newsletter-vne,
-    .downloadapp.contact,
-    .section_ads_300x250,
-    .installvneapp--small,
-    .social_info.width_common,
-    .box-ebank-qt.box-category,
-    .contact_info.width_common,
-    .box-news-other-site.container,
-    .vne_app.app_info.width_common,
-    .clearfix.box_300_targer.section,
-    .box-tvol-vs.has-border.box-category,
-    .fs_parent_box.wrap-box-business.container,
-    .coppy_right_info.width_common.newsletter_sidebar,
-    .box-tvol-vs.box_category_v2.box_category.inner_section,
-    .width_common.coppy_right_info.newsletters_footer_mb,
-    div.width_common.menu_grid2:nth-of-type(3),
-    ul.list-menu-footer:nth-of-type(5),
-    div.width_common.menu_grid2:nth-of-type(25),
-    #banner_top,
-    #thongtindoanhnghiep,
-    #box-raovat-v2-home-pc.box-raovat-v2.box-category,
-    #raovat.box_category_v2.box_category.section,
-    #footer > div.width_common.coppy_right_info > .vne_app.app_info.width_common {
-        display: none !important;
+function removeAdsAndAttributes() {
+  const elementsToHide = [
+    '[class="item-box-cate"]',
+    '[class="box-category box-ebank-qt"]',
+    '[class="menu_grid2 width_common"]',
+    '[class="contact downloadapp"]',
+    '[class="guitoasoan_btn ads_btn"]',
+    '[class="ads"]', '[class="list-link"]',
+    '[class="container box-news-other-site"]',
+    '[class="width_common app_info vne_app"]',
+    '[class*="section box_300_targer clearfix"]',
+    '[class*="newsletters_footer_mb coppy_right_info width_common"]',
+    '[class*="installvneapp installvneapp--small js_installvneapp"]',
+    '[id*="newsletters"]', '[id*="podcastIcon"]', '[class="inner_ads"]',
+    '[id*="banner_top"]', '[id*="raovat"]', '[id*="thongtindoanhnghiep"]',
+  ];
+
+  const unwantedLinks = [
+    'li.item-menu > a[href*="raovat.vnexpress.net"]',
+    'li.item-menu > a[href*="startup.vnexpress.net"]',
+    'li.link > a[href*="raovat.vnexpress.net"]',
+    'li.link > a[href*="startup.vnexpress.net"]',
+  ];
+
+  // Delete elements based on 'elementsToHide' 
+  elementsToHide.forEach((selector) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      // Remove the element completely from DOM 
+      element.remove();
+    });
+  });
+
+  // Delete the <li> containing unwanted links 
+  unwantedLinks.forEach((selector) => {
+    document.querySelectorAll(selector).forEach((element) => {
+      const listItem = element.closest('li'); // Tìm thẻ <li> cha gần nhất
+      if (listItem) {
+        listItem.remove(); // Remove the whole <li> from DOM 
+      }
+    });
+  });
+}
+
+function monitorAdsAdvanced() {
+  const observer = new MutationObserver(() => {
+    removeAdsAndAttributes();
+  });
+
+  function startObserver() {
+    if (document.body) {
+      observer.observe(document.body, {
+        childList: true, // Listen to change the list 
+        subtree: true,   // Track all branches in DOM 
+      });
+      removeAdsAndAttributes(); // Delete elements immediately at the start 
+    } else {
+      setTimeout(startObserver, 50); // Try again later if 'document.body' is not ready 
     }
-`;
+  }
 
-// Create a <style> element
-const style = document.createElement('style');
-style.textContent = css;
+  startObserver();
+}
 
-// Inject the style into the HTML head to ensure persistence even when cached
-document.documentElement.appendChild(style);
+// Chạy script
+monitorAdsAdvanced();
