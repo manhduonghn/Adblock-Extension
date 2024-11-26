@@ -19,12 +19,12 @@ document.documentElement.appendChild(style);
 (function removeUnwantedElements() {
     const unwantedPaths = [
         "phui.bongdaplus.vn", "mansion-sports",
-        "chuyen-de/phong-trao", "tip-tu-chuyen-gia",
-        "goc-check-var", "hau-truong-bong-da",
-        "ben-ngoai-duong-piste", "hotgirl", "esports",
-        "soi-keo", "dam-me", "tran-cau-vang",
-        "keo-xien-tags", "phao-cuu-sinh-tags",
-        "bong-da-phong-trao", "bet-of-the-day-tags", "nhan-dinh"
+        "chuyen-de/phong-trao", "/tip-tu-chuyen-gia",
+        "/goc-check-var", "/hau-truong-bong-da",
+        "/ben-ngoai-duong-piste", "/hotgirl", "/esports",
+        "/soi-keo", "/dam-me", "/tran-cau-vang",
+        "/keo-xien-tags", "/phao-cuu-sinh-tags", "/bong-da-phong-trao",
+        "/bet-of-the-day-tags", "/nhan-dinh-bong-da"
     ];
 
     // Observe DOM as changes occur
