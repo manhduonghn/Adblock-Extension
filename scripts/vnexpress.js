@@ -6,6 +6,7 @@ function removeAdsAndAttributes() {
     '[class="menu_grid2 width_common"]',
     '[class="contact downloadapp"]',
     '[class="guitoasoan_btn ads_btn"]',
+    '[class="mb30 guitoasoan_btn ads_btn"]',
     '[class="ads"]', '[class="list-link"]',
     '[class="container box-news-other-site"]',
     '[class="width_common app_info vne_app"]',
