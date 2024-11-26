@@ -1,24 +1,24 @@
-// Define CSS rules to hide specific sections initially 
-// These sections are likely to contain unwanted or irrelevant content
+// Define CSS rules to hide specific sections initially
 const css = `
-    .clz,
-    #ADMTOP,
-    .relates,
-    .tip-lst,
-    .mix-tags,
-    .mix-story,
-    .mix-stars,
-    .mix-specs,
-    .email-box,
-    .mix-predict,
-    .tx-cen.emobar,
+    .clz, .relates, .tip-lst,
+    .mix-tags, .mix-story, .mix-stars,
+    .mix-specs, .email-box, .mix-predict,
+    .tx-cen.emobar, #ADMTOP,
     #aplbshare.prescript,
     div.clz:nth-of-type(1),
     div.clx:nth-of-type(14),
     div.clx:nth-of-type(16),
     div.row:nth-of-type(15),
     div.row:nth-of-type(17),
-    main:nth-child(3) > section:last-child > div.cont-wrap > div.row:first-child > div.col.pad-300:first-child > div.mix-cats:nth-child(6) > div.row:nth-child(12) > div.col.m12.w6:last-child > div.capt-cover.ex-nav:first-child {
+    main:nth-child(3) > 
+    section:last-child > 
+    div.cont-wrap > 
+    div.row:first-child > 
+    div.col.pad-300:first-child > 
+    div.mix-cats:nth-child(6) > 
+    div.row:nth-child(12) > 
+    div.col.m12.w6:last-child > 
+    div.capt-cover.ex-nav:first-child {
         display: none !important;
     }
 `;
