@@ -7,6 +7,7 @@ function removeAdsAndAttributes() {
     '[class="contact downloadapp"]',
     '[class="guitoasoan_btn ads_btn"]',
     '[class="mb30 guitoasoan_btn ads_btn"]',
+    '[class="list_item_panel width_common"]',
     '[class="ads"]', '[class="list-link"]',
     '[class="container box-news-other-site"]',
     '[class="width_common app_info vne_app"]',
