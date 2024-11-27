@@ -7,7 +7,8 @@
   "permissions": [
     "declarativeNetRequest",
     "scripting",
-    "tabs"
+    "tabs", 
+    "storage"
   ],
   "background": {
     "service_worker": "background.js"
@@ -80,5 +81,13 @@
       "resources": ["custom_rules/block_list.txt"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "action": {
+    "default_icon": {
+      "16": "icon.png",
+      "32": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  }
 }
