@@ -89,20 +89,32 @@ function monitorAds() {
 
 // Function to disable caching by adding meta tags
 function disableCache() {
-  const metaTag = document.createElement("meta");
-  metaTag.httpEquiv = "Cache-Control";
-  metaTag.content = "no-cache, no-store, must-revalidate";
-  document.head.appendChild(metaTag);
+  // Check if DOM is ready
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", addMetaTags);
+  } else {
+    addMetaTags(); // If DOM is ready, execute directly
+  }
 
-  const metaPragma = document.createElement("meta");
-  metaPragma.httpEquiv = "Pragma";
-  metaPragma.content = "no-cache";
-  document.head.appendChild(metaPragma);
+  function addMetaTags() {
+    // Add Cache-Control meta tag
+    const metaTag = document.createElement("meta");
+    metaTag.httpEquiv = "Cache-Control";
+    metaTag.content = "no-cache, no-store, must-revalidate";
+    document.head.appendChild(metaTag);
 
-  const metaExpires = document.createElement("meta");
-  metaExpires.httpEquiv = "Expires";
-  metaExpires.content = "0";
-  document.head.appendChild(metaExpires);
+    // Add Pragma meta tag
+    const metaPragma = document.createElement("meta");
+    metaPragma.httpEquiv = "Pragma";
+    metaPragma.content = "no-cache";
+    document.head.appendChild(metaPragma);
+
+    // Add Expires meta tag
+    const metaExpires = document.createElement("meta");
+    metaExpires.httpEquiv = "Expires";
+    metaExpires.content = "0";
+    document.head.appendChild(metaExpires);
+  }
 }
 
 // Run the scripts
