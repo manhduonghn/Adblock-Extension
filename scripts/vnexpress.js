@@ -1,7 +1,6 @@
 function removeAdsAndAttributes() {
   const elementsToHide = [
     '[class*="inner_section section_wrap_poll mb20"]',
-    '[class*="item-box-cate"]',
     '[class*="box-category box-ebank-qt"]',
     '[class*="menu_grid2 width_common"]',
     '[class*="contact downloadapp"]',
