@@ -1,4 +1,3 @@
-// Function to remove ads from the page
 function removeAds() {
   const elementsToHide = [
     '[class*="adswarning"]',
@@ -60,17 +59,15 @@ function removeAds() {
     ".sidebar-ads",
   ];
 
-  // Loop through all selectors and remove matching elements
   elementsToHide.forEach((selector) => {
     document.querySelectorAll(selector).forEach((element) => element.remove());
   });
 }
 
-// Function to observe the DOM for changes and remove ads when detected
 function monitorAds() {
   const observer = new MutationObserver(removeAds);
 
-  // Check if DOM is ready and start observing
+  // Check if DOM is ready
   function startObserver() {
     if (document.body) {
       observer.observe(document.body, {
@@ -87,36 +84,5 @@ function monitorAds() {
   startObserver();
 }
 
-// Function to disable caching by adding meta tags
-function disableCache() {
-  // Check if DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", addMetaTags);
-  } else {
-    addMetaTags(); // If DOM is ready, execute directly
-  }
-
-  function addMetaTags() {
-    // Add Cache-Control meta tag
-    const metaTag = document.createElement("meta");
-    metaTag.httpEquiv = "Cache-Control";
-    metaTag.content = "no-cache, no-store, must-revalidate";
-    document.head.appendChild(metaTag);
-
-    // Add Pragma meta tag
-    const metaPragma = document.createElement("meta");
-    metaPragma.httpEquiv = "Pragma";
-    metaPragma.content = "no-cache";
-    document.head.appendChild(metaPragma);
-
-    // Add Expires meta tag
-    const metaExpires = document.createElement("meta");
-    metaExpires.httpEquiv = "Expires";
-    metaExpires.content = "0";
-    document.head.appendChild(metaExpires);
-  }
-}
-
-// Run the scripts
-disableCache(); // Disable cache for the page
-monitorAds();   // Start monitoring and removing ads
+// Run script
+monitorAds();
