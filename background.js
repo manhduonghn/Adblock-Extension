@@ -10,16 +10,19 @@ function loadAndProcessRules() {
                 fetch('/rules/rules.json').then(res => res.json()).catch(() => []),
                 fetch('/rules/custom_rules.json').then(res => res.json()).catch(() => [])
             ]).then(([rulesFromJson, customRulesFromJson]) => {
+                // Combine all existing rules
                 const allExistingRules = [...rulesFromJson, ...customRulesFromJson];
-                const existingRuleIds = allExistingRules.map(rule => rule.id);
 
+                // Convert ABP rules to DNR format
                 const convertedRules = convertABPtoDNR(abpRules, getMaxIdFromRules(allExistingRules) + 1);
 
-                // Remove duplicate rules
-                const uniqueRules = convertedRules.filter(rule => !existingRuleIds.includes(rule.id));
+                // Remove duplicate rules by content
+                const uniqueRules = convertedRules.filter(newRule => 
+                    !allExistingRules.some(existingRule => areRulesEqual(existingRule, newRule))
+                );
 
                 if (uniqueRules.length > 0) {
-                    // Update the new rules
+                    // Update the new rules in Chrome
                     chrome.declarativeNetRequest.updateDynamicRules({
                         removeRuleIds: allExistingRules.map(rule => rule.id),
                         addRules: uniqueRules
@@ -42,7 +45,18 @@ function loadAndProcessRules() {
 
 // Function to get the highest ID from the current rules
 function getMaxIdFromRules(rules) {
+    // Return the highest ID found in the rules array, or 0 if no rules exist
     return rules.length > 0 ? Math.max(...rules.map(rule => rule.id)) : 0;
+}
+
+// Function to compare two rules for equality
+function areRulesEqual(rule1, rule2) {
+    // Compare rules based on content, ignoring ID
+    return (
+        rule1.priority === rule2.priority &&
+        JSON.stringify(rule1.action) === JSON.stringify(rule2.action) &&
+        JSON.stringify(rule1.condition) === JSON.stringify(rule2.condition)
+    );
 }
 
 // Function to convert ABP rules to DNR format
@@ -56,7 +70,7 @@ function convertABPtoDNR(abpRules, startId) {
         // Skip comments or empty lines
         if (rule.startsWith('!') || rule === '') return;
 
-        // Check and skip rules with invalid characters (non-ASCII)
+        // Skip invalid (non-ASCII) rules
         if (!/^[\x00-\x7F]+$/.test(rule)) {
             console.warn(`Skipping invalid (non-ASCII) rule: ${rule}`);
             return;
@@ -65,16 +79,18 @@ function convertABPtoDNR(abpRules, startId) {
         const isAllowRule = rule.startsWith('@@');
         const isCSSRule = rule.startsWith('##') || rule.startsWith('#@#');
 
+        // Skip CSS rules as they are incompatible with DNR
         if (isCSSRule) {
             console.warn(`Skipping incompatible CSS rule: ${rule}`);
             return;
         }
 
-        let urlFilter = rule.replace(/^@@/, '').replace(/^\|\|/, '').replace(/\^$/, ''); // Remove unnecessary prefixes
+        // Clean up rule formatting
+        let urlFilter = rule.replace(/^@@/, '').replace(/^\|\|/, '').replace(/\^$/, '');
 
         const condition = {};
 
-        // Process `$option` (e.g., `$script`, `$image`, `$third-party`)
+        // Process $options (e.g., $script, $image, $third-party)
         if (rule.includes('$')) {
             const options = rule.split('$')[1];
             const resourceTypes = [];
@@ -87,7 +103,7 @@ function convertABPtoDNR(abpRules, startId) {
 
             if (resourceTypes.length > 0) condition.resourceTypes = resourceTypes;
 
-            // Process domain
+            // Handle domains
             if (options.includes('domain=')) {
                 const domains = options.match(/domain=([^,$]+)/)[1];
                 const excludedDomains = domains
@@ -103,43 +119,25 @@ function convertABPtoDNR(abpRules, startId) {
                 if (excludedDomains.length > 0) condition.excludedDomains = excludedDomains;
             }
 
-            // Process flags `~third-party` or `third-party`
+            // Handle domain type flags
             if (options.includes('third-party')) condition.domainType = 'thirdParty';
             if (options.includes('~third-party')) condition.domainType = 'firstParty';
         }
 
-        // Process domain exclusion with `$domain=~`
-        if (rule.includes('$domain=~')) {
-            const excludedDomain = rule.match(/\$domain=~([^,]+)/);
-            if (excludedDomain) {
-                condition.excludedDomains = excludedDomain[1].split('|');
-            }
-        }
-
-        // Process wildcard string conditions (*)
+        // Handle wildcard (*) replacement in URL filters
         if (urlFilter.includes('*')) {
             urlFilter = urlFilter.replace('*', '.*');
         }
 
-        // Process special rules (e.g., $xmlhttprequest)
-        if (rule.match(/^\/.*\$/)) {
-            const specialRule = {
-                id: currentId++,  // Calculate ID based on the incremented `currentId`
-                priority: 1,
-                action: isAllowRule ? { type: 'allow' } : { type: 'block' },
-                condition: { urlFilter, ...condition }
-            };
-            dnrRules.push(specialRule);
-        } else {
-            // Process simple rules without special characters
-            const simpleRule = {
-                id: currentId++,  // Calculate ID based on the incremented `currentId`
-                priority: 1,
-                action: isAllowRule ? { type: 'allow' } : { type: 'block' },
-                condition: { urlFilter }
-            };
-            dnrRules.push(simpleRule);
-        }
+        // Create and store the rule
+        const newRule = {
+            id: currentId++, // Assign a unique ID
+            priority: 1,
+            action: isAllowRule ? { type: 'allow' } : { type: 'block' },
+            condition: { urlFilter, ...condition }
+        };
+
+        dnrRules.push(newRule);
     });
 
     console.log(`Converted ${dnrRules.length} rules from block_list.txt.`);
