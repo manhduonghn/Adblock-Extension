@@ -1,4 +1,4 @@
-// Define CSS rules to hide specific sections initially
+// Define initial CSS rules to hide specific sections immediately
 const css = `
     .clz, .relates, .tip-lst,
     .mix-tags, .mix-story, .mix-stars,
@@ -23,10 +23,12 @@ const css = `
     }
 `;
 
-// Add the defined CSS to the document
-const style = document.createElement('style');
-style.textContent = css;
-document.documentElement.appendChild(style);
+// Inject CSS into the document to hide elements
+function injectCSS(cssRules) {
+    const style = document.createElement('style');
+    style.textContent = cssRules;
+    document.documentElement.appendChild(style);
+}
 
 // Function to remove unwanted content dynamically
 function removeUnwantedContent() {
@@ -107,6 +109,9 @@ function monitorContentChanges() {
 
     startObserver(); // Initialize the observer
 }
+
+// Inject CSS to hide elements immediately
+injectCSS(css);
 
 // Run the script
 monitorContentChanges();
