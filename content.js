@@ -87,21 +87,15 @@ function monitorAds() {
   startObserver();
 }
 
-// Function to disable caching by adding meta tags
+// Function to disable caching by adding meta tags and refreshing resources
 function disableCache() {
-  // Check if DOM is ready
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", addMetaTags);
-  } else {
-    addMetaTags(); // If DOM is ready, execute directly
-  }
-
+  // Add meta tags to disable browser cache
   function addMetaTags() {
     // Add Cache-Control meta tag
-    const metaTag = document.createElement("meta");
-    metaTag.httpEquiv = "Cache-Control";
-    metaTag.content = "no-cache, no-store, must-revalidate";
-    document.head.appendChild(metaTag);
+    const metaCacheControl = document.createElement("meta");
+    metaCacheControl.httpEquiv = "Cache-Control";
+    metaCacheControl.content = "no-cache, no-store, must-revalidate";
+    document.head.appendChild(metaCacheControl);
 
     // Add Pragma meta tag
     const metaPragma = document.createElement("meta");
@@ -115,8 +109,64 @@ function disableCache() {
     metaExpires.content = "0";
     document.head.appendChild(metaExpires);
   }
+
+  // Append a random query string to all resources (CSS, JS)
+  function refreshResources() {
+    const resources = [...document.querySelectorAll('link[rel="stylesheet"], script[src]')];
+    const timestamp = Date.now();
+    
+    resources.forEach((resource) => {
+      const url = new URL(resource.href || resource.src, window.location.origin);
+      url.searchParams.set("nocache", timestamp); // Append random parameter to avoid cache
+
+      if (resource.tagName === "LINK") {
+        // Reload stylesheets
+        const newLink = resource.cloneNode();
+        newLink.href = url.href;
+        resource.parentNode.replaceChild(newLink, resource);
+      } else if (resource.tagName === "SCRIPT") {
+        // Reload scripts
+        const newScript = resource.cloneNode();
+        newScript.src = url.href;
+        newScript.onload = () => resource.parentNode.removeChild(resource); // Remove old script
+        resource.parentNode.insertBefore(newScript, resource.nextSibling);
+      }
+    });
+  }
+
+  // Ensure DOM is ready before applying changes
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+      addMetaTags();
+      refreshResources();
+    });
+  } else {
+    addMetaTags();
+    refreshResources();
+  }
+}
+
+// Function to monitor DOM and apply cache-busting for dynamically loaded content
+function monitorAds() {
+  const observer = new MutationObserver(() => {
+    disableCache(); // Reapply cache-busting rules on DOM changes
+  });
+
+  // Start observing DOM changes
+  function startObserver() {
+    if (document.body) {
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
+    } else {
+      setTimeout(startObserver, 50);
+    }
+  }
+
+  startObserver();
 }
 
 // Run the scripts
 disableCache(); // Disable cache for the page
-monitorAds();   // Start monitoring and removing ads
+monitorAds();   // Start monitoring for dynamically added content
