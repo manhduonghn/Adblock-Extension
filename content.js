@@ -1,7 +1,6 @@
+// Function to remove ads from the page
 function removeAds() {
   const elementsToHide = [
-    '[id*="an_catfish"]',
-    '[class="off-ads"]',
     '[class*="adswarning"]',
     '[class*="ad300"]',
     '[class*="adHeight"]',
@@ -61,15 +60,17 @@ function removeAds() {
     ".sidebar-ads",
   ];
 
+  // Loop through all selectors and remove matching elements
   elementsToHide.forEach((selector) => {
     document.querySelectorAll(selector).forEach((element) => element.remove());
   });
 }
 
+// Function to observe the DOM for changes and remove ads when detected
 function monitorAds() {
   const observer = new MutationObserver(removeAds);
 
-  // Check if DOM is ready
+  // Check if DOM is ready and start observing
   function startObserver() {
     if (document.body) {
       observer.observe(document.body, {
@@ -86,5 +87,24 @@ function monitorAds() {
   startObserver();
 }
 
-// Run script
-monitorAds();
+// Function to disable caching by adding meta tags
+function disableCache() {
+  const metaTag = document.createElement("meta");
+  metaTag.httpEquiv = "Cache-Control";
+  metaTag.content = "no-cache, no-store, must-revalidate";
+  document.head.appendChild(metaTag);
+
+  const metaPragma = document.createElement("meta");
+  metaPragma.httpEquiv = "Pragma";
+  metaPragma.content = "no-cache";
+  document.head.appendChild(metaPragma);
+
+  const metaExpires = document.createElement("meta");
+  metaExpires.httpEquiv = "Expires";
+  metaExpires.content = "0";
+  document.head.appendChild(metaExpires);
+}
+
+// Run the scripts
+disableCache(); // Disable cache for the page
+monitorAds();   // Start monitoring and removing ads
