@@ -15,6 +15,8 @@ function removeAdsAndAttributes() {
     '[class*="installvneapp installvneapp--small js_installvneapp"]',
     '[id*="newsletters"]', '[id*="podcastIcon"]', '[class*="inner_ads"]',
     '[id*="banner_top"]', '[id*="raovat"]', '[id*="thongtindoanhnghiep"]',
+    '[class="width_common box-ewiki animated animatedFadeInUp fadeInUp"]',
+    
   ];
 
   const unwantedLinks = [
