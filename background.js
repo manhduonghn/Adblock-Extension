@@ -67,7 +67,7 @@ function convertABPtoDNR(abpRules, startId) {
     abpRules.forEach(rule => {
         rule = rule.trim();
 
-        // Skip comments or empty lines
+        // Skip empty lines or comments
         if (rule.startsWith('!') || rule === '') return;
 
         // Skip invalid (non-ASCII) rules
@@ -85,9 +85,8 @@ function convertABPtoDNR(abpRules, startId) {
             return;
         }
 
-        // Clean up rule formatting
-        let urlFilter = rule.replace(/^@@/, '').replace(/^\|\|/, '').replace(/\^$/, '');
-
+        // Clean up rule formatting (remove '@@' and '||', handle domain exclusions)
+        let urlFilter = rule.replace(/^@@/, '').replace(/^\|\|/, '').replace(/\^$/, '').replace(/\^/, '/');
         const condition = {};
 
         // Process $options (e.g., $script, $image, $third-party)
@@ -103,17 +102,20 @@ function convertABPtoDNR(abpRules, startId) {
 
             if (resourceTypes.length > 0) condition.resourceTypes = resourceTypes;
 
-            // Handle domains
+            // Handle domain inclusion and exclusion
             if (options.includes('domain=')) {
-                const domains = options.match(/domain=([^,$]+)/)[1];
-                const excludedDomains = domains
-                    .split('|')
-                    .filter(domain => domain.startsWith('~'))
-                    .map(domain => domain.replace('~', ''));
+                const domainPart = options.match(/domain=([^,$]+)/)[1];
+                const excludedDomains = [];
+                const includedDomains = [];
 
-                const includedDomains = domains
-                    .split('|')
-                    .filter(domain => !domain.startsWith('~'));
+                // Split domains by '|' and separate excluded ones (those starting with '~')
+                domainPart.split('|').forEach(domain => {
+                    if (domain.startsWith('~')) {
+                        excludedDomains.push(domain.slice(1));  // Remove '~'
+                    } else {
+                        includedDomains.push(domain);
+                    }
+                });
 
                 if (includedDomains.length > 0) condition.domains = includedDomains;
                 if (excludedDomains.length > 0) condition.excludedDomains = excludedDomains;
@@ -129,7 +131,7 @@ function convertABPtoDNR(abpRules, startId) {
             urlFilter = urlFilter.replace('*', '.*');
         }
 
-        // Create and store the rule
+        // Create the rule in DNR format, no 'rewrite' property allowed
         const newRule = {
             id: currentId++, // Assign a unique ID
             priority: 1,
@@ -140,7 +142,7 @@ function convertABPtoDNR(abpRules, startId) {
         dnrRules.push(newRule);
     });
 
-    console.log(`Converted ${dnrRules.length} rules from block_list.txt.`);
+    console.log(`Converted ${dnrRules.length} rules from ABP.`);
     return dnrRules;
 }
 
