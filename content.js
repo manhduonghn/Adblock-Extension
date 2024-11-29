@@ -1,14 +1,14 @@
 // Mapping between hostname and script paths
 const scriptMap = {
-  "phimmoichilltv.net": "scripts/phimmoichill.js",
-  "bongdaplus.vn": "scripts/bongdaplus.js",
-  "vnexpress.net": "scripts/vnexpress.js",
-  "youtube.com": "scripts/youtube.js",
-  "phimnhanhz.com": "scripts/phimnhanh.js",
+  "phimmoichilltv.net": "phimmoichill.js",
+  "bongdaplus.vn": "bongdaplus.js",
+  "vnexpress.net": "vnexpress.js",
+  "youtube.com": "youtube.js",
+  "phimnhanhz.com": "phimnhanh.js",
   "truyensex": {
     // Multiple domains point to the same script
     domains: ["truyensex.moe", "truyensextv1.com"],
-    script: "scripts/truyensex.js"
+    script: "truyensex.js"
   }
 };
 
@@ -36,7 +36,7 @@ Object.keys(scriptMap).forEach((key) => {
 
 // Inject the matching script if found
 if (scriptToInject) {
-  const scriptPath = chrome.runtime.getURL(scriptToInject);
+  const scriptPath = chrome.runtime.getURL(`scripts/${scriptToInject}`);
 
   // Create and inject the script
   const script = document.createElement("script");
@@ -44,8 +44,4 @@ if (scriptToInject) {
   script.type = "text/javascript";
   script.async = false; // Ensure script runs in order
   document.documentElement.appendChild(script);
-
-  console.log(`Injected script: ${scriptPath} for host: ${hostname}`);
-} else {
-  console.log(`No matching script found for host: ${hostname}`);
 }
