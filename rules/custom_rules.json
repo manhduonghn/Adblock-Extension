@@ -118,5 +118,32 @@
       "resourceTypes": ["script"],
       "domainType": "thirdParty"
     }
+  },
+  {
+  "id": 41517,
+  "priority": 1,
+  "action": {
+    "type": "block"
+  },
+  "condition": {
+    "urlFilter": "||i.imgur.com^*.gif",
+    "resourceTypes": ["image"],
+    "domainType": "thirdParty",
+    "includedDomains": [
+      "ghienphim.io",
+      "mv.dailyphimz.com",
+      "mv.phimmoiaz.cc",
+      "phimgichill.net",
+      "mythethao.net",
+      "xemtivi4k.com",
+      "vtipster.net",
+      "huphimtv.com",
+      "phimmoi.club",
+      "xemtivi.tvhayhd.tv",
+      "hoathinh4k3.net",
+      "vutruphim.tv",
+      "ketqua247vn.club"
+    ]
+  }
   }
 ]
