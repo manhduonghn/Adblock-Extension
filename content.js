@@ -1,4 +1,3 @@
-
 // Mapping between hostname and script paths
 const scriptMap = {
   "phimmoichilltv.net": "scripts/phimmoichill.js",
