@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
   "name": "AdBlock Extension",
-  "version": "1.3",
-  "description": "Blocks ads without impacting performance.",
+  "version": "1.4",
+  "description": "Blocks ads dynamically based on domain.",
   "author": "luxysiv",
   "permissions": [
     "declarativeNetRequest",
     "scripting",
-    "tabs", 
+    "tabs",
     "storage"
   ],
   "background": {
@@ -21,40 +21,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*.youtube.com/*"],
-      "js": ["scripts/youtube.js"]
-    },
-    {
-      "matches": ["*://phimmoichilltv.net/*"],
-      "js": ["scripts/phimmoichill.js"],
-      "run_at": "document_start"
-    },
-    {
-      "matches": [
-        "*://phimnhanhz.com/*",
-        "*://linkads.xyz/*"
-      ],
-      "js": ["scripts/phimnhanh.js"],
-      "run_at": "document_start"
-    },
-    {
-      "matches": ["*://*.vnexpress.net/*"],
-      "js": ["scripts/vnexpress.js"],
-      "run_at": "document_start"
-    },
-    {
-      "matches": ["*://bongdaplus.vn/*"],
-      "js": ["scripts/bongdaplus.js"],
-      "run_at": "document_start"
-    },
-    {
-      "matches": ["*://truyensex.moe/*", "*://truyensextv1.com/*"],
-      "js": ["scripts/truyensex.js"],
-      "run_at": "document_start"
-    },
-    {
       "matches": ["<all_urls>"],
-      "exclude_matches": ["http://localhost/*", "https://localhost/*"],
       "js": ["content.js"],
       "run_at": "document_start"
     }
@@ -78,7 +45,9 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["custom_rules/block_list.txt"],
+      "resources": [
+        "scripts/*.js" 
+      ],
       "matches": ["<all_urls>"]
     }
   ],
