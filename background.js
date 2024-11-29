@@ -8,17 +8,24 @@ function loadAndProcessRules() {
             // Load rules from the files rules/rules.json and rules/custom_rules.json
             Promise.all([
                 fetch('/rules/rules.json').then(res => res.json()).catch(() => []),
-                fetch('/rules/custom_rules.json').then(res => res.json()).catch(() => [])
-            ]).then(([rulesFromJson, customRulesFromJson]) => {
+                fetch('/rules/custom_rules.json').then(res => res.json()).catch(() => []),
+                // Load previously added rule IDs from storage
+                new Promise(resolve => {
+                    chrome.storage.local.get('addedRuleIds', (result) => {
+                        resolve(result.addedRuleIds || []);
+                    });
+                })
+            ]).then(([rulesFromJson, customRulesFromJson, addedRuleIds]) => {
                 // Combine all existing rules
                 const allExistingRules = [...rulesFromJson, ...customRulesFromJson];
 
                 // Convert ABP rules to DNR format
                 const convertedRules = convertABPtoDNR(abpRules, getMaxIdFromRules(allExistingRules) + 1);
 
-                // Remove duplicate rules by content
+                // Remove duplicate rules by content or ID
                 const uniqueRules = convertedRules.filter(newRule => 
-                    !allExistingRules.some(existingRule => areRulesEqual(existingRule, newRule))
+                    !allExistingRules.some(existingRule => areRulesEqual(existingRule, newRule)) &&
+                    !addedRuleIds.includes(newRule.id)  // Skip already added rules
                 );
 
                 if (uniqueRules.length > 0) {
@@ -28,6 +35,10 @@ function loadAndProcessRules() {
                         addRules: uniqueRules
                     }).then(() => {
                         console.log(`Added ${uniqueRules.length} new rules from block_list.txt.`);
+
+                        // Store the newly added rule IDs in local storage
+                        const updatedAddedRuleIds = [...addedRuleIds, ...uniqueRules.map(rule => rule.id)];
+                        chrome.storage.local.set({ addedRuleIds: updatedAddedRuleIds });
                     }).catch(error => {
                         console.error("Error updating rules:", error);
                     });
