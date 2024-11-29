@@ -3,7 +3,7 @@ function removeAds() {
     "adslot", "gpt-ad", "admobile", "deskad", "adframe", "adleaderboard", 
     "sponsored", "adcontainer", "ads_bottom", "ad-sidebar", "adblocker", 
     "ad-overlay", "adblock-sidebar", "ad-vertical", "ad-footer", "ad-header", 
-    "topAdv"
+    "topAdv" , "div_inpage_banner"
   ];
   
   const classes = [
@@ -22,13 +22,20 @@ function removeAds() {
     ".ad-section", ".ad-background", "#topAdv", ".sidebar-ads"
   ];
   
-  // Build selectors dynamically from ids and classes
+  // Create dynamic selector
+  const dynamicSelectors = [
+    '[id*="ADS_"][id*="container"]'
+  ];
+
+  // Combine all selectors
   const selectors = [
     ...ids.map(id => `[id*="${id}"]`),
     ...classes.map(cls => `[class*="${cls}"]`),
-    ...elements
+    ...elements,
+    ...dynamicSelectors // Thêm phần tìm kiếm động vào
   ];
 
+  // Remove elements by selector
   selectors.forEach(selector => {
     document.querySelectorAll(selector).forEach(element => element.remove());
   });
