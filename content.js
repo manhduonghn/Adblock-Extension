@@ -1,88 +1,52 @@
-function removeAds() {
-  const elementsToHide = [
-    '[class*="adswarning"]',
-    '[class*="ad300"]',
-    '[class*="adHeight"]',
-    '[class*="special-offer"]',
-    '[id*="adslot"]',
-    '[class*="rightAd"]',
-    '[id*="gpt-ad"]',
-    '[class*="ad-slot"]',
-    '[class*="ad-container"]',
-    '[aria-label*="advertisement"]',
-    '[class*="adnative"]',
-    '[class*=".wps-player__happy-inside"]',
-    '[id*="admobile"]',
-    '[id*="deskad"]',
-    ".vjs-inplayer-container",
-    "#movieplayer-box-adv",
-    "#EPimLayerOuter",
-    '[class*="ads-banner"]',
-    '[class*="ad-box"]',
-    '[id*="adframe"]',
-    '[class*="promo-ad"]',
-    '[id*="adleaderboard"]',
-    '[class*="banner-ad"]',
-    '[id*="sponsored"]',
-    '[class*="ad-display"]',
-    '[id*="advert"]',
-    '[class*="popup-ad"]',
-    '[id*="adside"]',
-    '[class*="adspace"]',
-    '[class*="adblock"]',
-    '[id*="adtop"]',
-    ".ad-wrapper",
-    ".advertisement-container",
-    ".ad-section",
-    '[class*="ad-wrap"]',
-    '[class*="ad-banner"]',
-    '[id*="adcontainer"]',
-    '[class*="adsense"]',
-    '[id*="ads_bottom"]',
-    '[class*="ad-section"]',
-    '[class*="adsbox"]',
-    '[class*="ad-unit"]',
-    '[class*="inline-ad"]',
-    '[id*="ad-sidebar"]',
-    '[class*="advert-unit"]',
-    '[id*="adblocker"]',
-    '[class*="ad-overlay"]',
-    '[id*="adblock-sidebar"]',
-    '[class*="sponsored-content"]',
-    '[class*="ad-vertical"]',
-    ".sponsored-post",
-    "#ad-footer",
-    "#ad-header",
-    ".ad-background",
-    ".video-archive-ad",
-    "#topAdv",
-    ".sidebar-ads",
-  ];
 
-  elementsToHide.forEach((selector) => {
-    document.querySelectorAll(selector).forEach((element) => element.remove());
-  });
-}
+// Mapping between hostname and script paths
+const scriptMap = {
+  "phimmoichilltv.net": "scripts/phimmoichill.js",
+  "bongdaplus.vn": "scripts/bongdaplus.js",
+  "vnexpress.net": "scripts/vnexpress.js",
+  "youtube.com": "scripts/youtube.js",
+  "phimnhanhz.com": "scripts/phimnhanh.js",
+  "truyensex": {
+    // Multiple domains point to the same script
+    domains: ["truyensex.moe", "truyensextv1.com"],
+    script: "scripts/truyensex.js"
+  }
+};
 
-function monitorAds() {
-  const observer = new MutationObserver(removeAds);
+// Get the current hostname
+const hostname = location.hostname;
 
-  // Check if DOM is ready
-  function startObserver() {
-    if (document.body) {
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true,
-      });
-      removeAds(); // Remove ads immediately
-    } else {
-      // If `document.body` does not exist, try again later
-      setTimeout(startObserver, 50);
+// Find the matching script for the current page
+let scriptToInject = null;
+
+Object.keys(scriptMap).forEach((key) => {
+  const mapping = scriptMap[key];
+
+  if (typeof mapping === "string") {
+    // Single domain case
+    if (hostname.includes(key)) {
+      scriptToInject = mapping;
+    }
+  } else if (typeof mapping === "object" && mapping.domains) {
+    // Multiple domains case
+    if (mapping.domains.some((domain) => hostname.includes(domain))) {
+      scriptToInject = mapping.script;
     }
   }
+});
 
-  startObserver();
+// Inject the matching script if found
+if (scriptToInject) {
+  const scriptPath = chrome.runtime.getURL(scriptToInject);
+
+  // Create and inject the script
+  const script = document.createElement("script");
+  script.src = scriptPath;
+  script.type = "text/javascript";
+  script.async = false; // Ensure script runs in order
+  document.documentElement.appendChild(script);
+
+  console.log(`Injected script: ${scriptPath} for host: ${hostname}`);
+} else {
+  console.log(`No matching script found for host: ${hostname}`);
 }
-
-// Run script
-monitorAds();
