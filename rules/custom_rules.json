@@ -3,6 +3,34 @@
     "id": 41508,
     "priority": 1,
     "action": {
+      "type": "modifyHeaders",
+      "requestHeaders": [
+        {
+          "header": "Cache-Control",
+          "operation": "set",
+          "value": "no-store"
+        },
+        {
+          "header": "Pragma",
+          "operation": "set",
+          "value": "no-cache"
+        },
+        {
+          "header": "Expires",
+          "operation": "set",
+          "value": "0"
+        }
+      ]
+    },
+    "condition": {
+      "urlFilter": ".*\\.html$",
+      "resourceTypes": ["main_frame", "sub_frame"]
+    }
+  },
+  {
+    "id": 41509,
+    "priority": 1,
+    "action": {
       "type": "block"
     },
     "condition": {
@@ -12,7 +40,7 @@
     }
   },
   {
-    "id": 41509,
+    "id": 41510,
     "priority": 1,
     "action": {
       "type": "block"
@@ -23,7 +51,7 @@
     }
   },
   {
-    "id": 41510,
+    "id": 41511,
     "priority": 1,
     "action": {
       "type": "block"
@@ -34,7 +62,7 @@
     }
   },
   {
-    "id": 41511,
+    "id": 41512,
     "priority": 1,
     "action": {
       "type": "block"
@@ -45,7 +73,7 @@
     }
   },
   {
-    "id": 41512,
+    "id": 41513,
     "priority": 1,
     "action": {
       "type": "block"
@@ -56,7 +84,7 @@
     }
   },
   {
-    "id": 41513,
+    "id": 41514,
     "priority": 1,
     "action": {
       "type": "block"
@@ -68,7 +96,7 @@
     }
   },
   {
-    "id": 41514,
+    "id": 41515,
     "priority": 1,
     "action": {
       "type": "block"
@@ -80,7 +108,7 @@
     }
   },
   {
-    "id": 41515,
+    "id": 41516,
     "priority": 1,
     "action": {
       "type": "block"
