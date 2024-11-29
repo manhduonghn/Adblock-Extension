@@ -44,4 +44,16 @@ if (scriptToInject) {
   script.type = "text/javascript";
   script.async = false; // Ensure script runs in order
   document.documentElement.appendChild(script);
+  
+  console.log(`Injected script: ${scriptPath} for host: ${hostname}`);
+} else {
+  // If there is no separate script, run cosmetic.js
+  const scriptPath = chrome.runtime.getURL("scripts/cosmetic.js");
+  const script = document.createElement("script");
+  script.src = scriptPath;
+  script.type = "text/javascript";
+  script.async = false;
+  document.documentElement.appendChild(script);
+
+  console.log("Injected cosmetic.js for host: " + hostname);
 }
