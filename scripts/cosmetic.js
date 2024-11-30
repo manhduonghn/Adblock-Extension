@@ -3,7 +3,7 @@ function removeAds() {
     "adslot", "gpt-ad", "admobile", "deskad", "adframe", "adleaderboard", 
     "sponsored", "adcontainer", "ads_bottom", "ad-sidebar", "adblocker", 
     "ad-overlay", "adblock-sidebar", "ad-vertical", "ad-footer", "ad-header", 
-    "topAdv" , "div_inpage_banner"
+    "topAdv", "div_inpage_banner"
   ];
   
   const classes = [
@@ -22,35 +22,41 @@ function removeAds() {
     ".ad-section", ".ad-background", "#topAdv", ".sidebar-ads"
   ];
   
-  // Create dynamic selector
   const dynamicSelectors = [
     '[id*="ADS_"][id*="container"]'
   ];
 
-  // Combine all selectors
   const selectors = [
     ...ids.map(id => `[id*="${id}"]`),
     ...classes.map(cls => `[class*="${cls}"]`),
     ...elements,
-    ...dynamicSelectors // Thêm phần tìm kiếm động vào
+    ...dynamicSelectors
   ];
 
-  // Remove elements by selector
   selectors.forEach(selector => {
-    document.querySelectorAll(selector).forEach(element => element.remove());
+    try {
+      const nodes = document.querySelectorAll(selector);
+
+      // Ensure nodes is iterable
+      if (nodes && nodes.forEach) {
+        nodes.forEach(node => node.remove());
+      } else {
+        Array.from(nodes).forEach(node => node.remove());
+      }
+    } catch (error) {
+      console.error(`Invalid selector: ${selector}`, error);
+    }
   });
 }
 
 function monitorAds() {
   const observer = new MutationObserver(removeAds);
 
-  // Check if DOM is ready
   function startObserver() {
     if (document.body) {
       observer.observe(document.body, { childList: true, subtree: true });
-      removeAds(); // Remove ads immediately
+      removeAds();
     } else {
-      // If `document.body` does not exist, try again later
       setTimeout(startObserver, 50);
     }
   }
@@ -58,5 +64,4 @@ function monitorAds() {
   startObserver();
 }
 
-// Run script
 monitorAds();
