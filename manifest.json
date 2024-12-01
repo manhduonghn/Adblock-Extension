@@ -31,7 +31,7 @@
       {
         "id": "default_rules",
         "enabled": true,
-        "path": "rules/rules.json"
+        "path": "rules.json"
       }
     ]
   },
