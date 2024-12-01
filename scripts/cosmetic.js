@@ -23,7 +23,8 @@ function removeAds() {
   ];
   
   const dynamicSelectors = [
-    '[id*="ADS_"][id*="container"]'
+    '[id*="ADS_"][id*="container"]',
+    '[class*="module_"][class="_ads"]'
   ];
 
   const selectors = [
