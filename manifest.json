@@ -10,9 +10,6 @@
     "tabs",
     "storage"
   ],
-  "background": {
-    "service_worker": "background.js"
-  },
   "icons": {
     "16": "icon.png",
     "32": "icon.png",
@@ -35,11 +32,6 @@
         "id": "default_rules",
         "enabled": true,
         "path": "rules/rules.json"
-      },
-      {
-        "id": "custom_rules",
-        "enabled": true,
-        "path": "rules/custom_rules.json"
       }
     ]
   },
