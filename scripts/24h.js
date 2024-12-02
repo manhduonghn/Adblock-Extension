@@ -63,21 +63,21 @@ function monitorAds() {
 
 function removeSponsoredContent() {
   try {
-    // Loại bỏ các bài viết quảng cáo dựa trên nội dung hoặc liên kết
-    const allElements = document.querySelectorAll('article, div, span');
+    // Chọn tất cả các phần tử có thể chứa nội dung tài trợ
+    const elements = document.querySelectorAll('article, div, span');
 
-    allElements.forEach(element => {
+    elements.forEach(element => {
       const textContent = element.textContent || '';
       const hasSponsoredText = textContent.includes('Tin tài trợ') || textContent.includes('tài trợ');
       const hasSponsoredLink = element.querySelector('a[rel="nofollow sponsored"], a[href*="hauob.com"]');
 
-      // Kiểm tra và xóa phần tử
+      // Kiểm tra và xóa phần tử nếu phát hiện quảng cáo
       if (hasSponsoredText || hasSponsoredLink) {
         element.remove();
       }
     });
 
-    // Xóa các phần tử có id ngẫu nhiên
+    // Xóa các phần tử có ID ngẫu nhiên
     const randomIdRegex = /^[a-zA-Z]{8,12}_\d+_\d+$/;
     document.querySelectorAll('[id]').forEach(element => {
       if (randomIdRegex.test(element.id)) {
@@ -90,27 +90,31 @@ function removeSponsoredContent() {
 }
 
 function monitorSponsoredContent() {
-  const observer = new MutationObserver(mutations => {
-    try {
-      mutations.forEach(() => {
+  try {
+    // Thiết lập MutationObserver
+    const observer = new MutationObserver(() => {
+      try {
         removeSponsoredContent();
-      });
-    } catch (error) {
-      console.error('Error during mutation observer:', error);
-    }
-  });
+      } catch (error) {
+        console.error('Error during mutation observer callback:', error);
+      }
+    });
 
-  document.addEventListener('DOMContentLoaded', () => {
-    try {
-      // Loại bỏ quảng cáo ngay khi trang vừa tải
-      removeSponsoredContent();
-    } catch (error) {
-      console.error('Error during initial removal:', error);
-    }
-
-    // Theo dõi tất cả thay đổi DOM
-    observer.observe(document.body, { childList: true, subtree: true });
-  });
+    // Chạy khi DOM đã tải
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        // Xóa quảng cáo ban đầu
+        removeSponsoredContent();
+        
+        // Theo dõi mọi thay đổi trong DOM
+        observer.observe(document.body, { childList: true, subtree: true });
+      } catch (error) {
+        console.error('Error during initial setup:', error);
+      }
+    });
+  } catch (error) {
+    console.error('Error while setting up observer:', error);
+  }
 }
 
 monitorAds();
