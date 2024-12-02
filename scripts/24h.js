@@ -4,7 +4,7 @@ function removeAds() {
   ];
   
   const classes = [
-    "m_banner_show"
+    "m_banner_show", "footer-24h-lhqc"
   ];
   
   const elements = [
