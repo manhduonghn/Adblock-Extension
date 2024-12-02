@@ -1,6 +1,6 @@
 function removeAds() {
   const ids = [
-    "banner_duoi_tin_so_6", "div_inpage_banner", "banner-inpage"
+    "banner_duoi_tin_so_6", "div_inpage_banner" , "banner-inpage"
   ];
   
   const classes = [
@@ -8,16 +8,12 @@ function removeAds() {
   ];
   
   const elements = [
-    ".popup_ads_100wh", ".popup_ads_none", ".popup_ads",
-    "#box_4t1_trang_chu > .mar-auto.container",
-    "#div_danh_cho_phai_dep_cot_phai",
-    ".mar-t-15.padd-b-15.padd-t-30.ttdn-24h-b",
-    ".mgbt10.mrT5.cate-24h-foot-home-2-col"
+    ".popup_ads_100wh", ".popup_ads_none", ".popup_ads"
   ];
   
   const dynamicSelectors = [
     '[id*="ADS_"][id*="container"]',
-    '[class*="module_"][class*="_ads"]',
+    '[class*="module_"][class="_ads"]',
     '[id*="google_ads_iframe"][id*="mobile"]'
   ];
 
@@ -31,8 +27,12 @@ function removeAds() {
   selectors.forEach(selector => {
     try {
       const nodes = document.querySelectorAll(selector);
-      if (nodes && nodes.length > 0) {
+
+      // Ensure nodes is iterable
+      if (nodes && nodes.forEach) {
         nodes.forEach(node => node.remove());
+      } else {
+        Array.from(nodes).forEach(node => node.remove());
       }
     } catch (error) {
       console.error(`Invalid selector: ${selector}`, error);
@@ -41,13 +41,7 @@ function removeAds() {
 }
 
 function monitorAds() {
-  const observer = new MutationObserver(() => {
-    try {
-      removeAds();
-    } catch (error) {
-      console.error("Error while removing ads:", error);
-    }
-  });
+  const observer = new MutationObserver(removeAds);
 
   function startObserver() {
     if (document.body) {
@@ -61,48 +55,12 @@ function monitorAds() {
   startObserver();
 }
 
-function removeSponsoredContent() {
-  try {
-    // Chỉ xóa các bài viết có thuộc tính 'nofollow' và 'sponsored'
-    const articles = document.querySelectorAll('article');
-    articles.forEach(article => {
-      // Kiểm tra nếu có liên kết 'nofollow' và 'sponsored'
-      const adLink = article.querySelector('a[rel="nofollow"][sponsored]');
-      const sponsoredText = article.querySelector('span.tmPst.clrGr');  // Kiểm tra văn bản "Tin tài trợ"
-      
-      // Nếu phát hiện liên kết quảng cáo hoặc "Tin tài trợ", xóa bài viết
-      if (adLink || sponsoredText) {
-        article.remove();
-      }
-    });
-
-    // Xóa các phần tử có ID ngẫu nhiên nếu cần
-    const randomIdRegex = /^[a-zA-Z]{8,12}_\d+_\d+$/;
-    document.querySelectorAll('[id]').forEach(element => {
-      if (randomIdRegex.test(element.id)) {
-        element.remove();
-      }
-    });
-
-  } catch (error) {
-    console.error("Error while removing sponsored content:", error);
-  }
-}
-
-function monitorSponsoredContent() {
-  const observer = new MutationObserver(removeSponsoredContent);
-
-  document.addEventListener('DOMContentLoaded', () => {
-    try {
-      removeSponsoredContent();
-    } catch (error) {
-      console.error("Error during initial sponsored content removal:", error);
-    }
-
-    observer.observe(document.body, { childList: true, subtree: true });
-  });
-}
-
-// Bắt đầu theo dõi quảng cáo và nội dung tài trợ
 monitorAds();
-monitorSponsoredContent();
+
+// Lựa chọn tất cả các phần tử <article> có class 'atclRdSbIn' và có chứa thuộc tính rel="nofollow sponsored"
+var sponsoredArticles = document.querySelectorAll('article.atclRdSbIn[rel="nofollow sponsored"], span.imgFlt a[rel="nofollow sponsored"]');
+
+// Duyệt qua và xóa các phần tử này
+sponsoredArticles.forEach(function(article) {
+    article.closest('article').remove();
+});
