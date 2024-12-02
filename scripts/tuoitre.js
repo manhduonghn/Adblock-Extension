@@ -2,7 +2,7 @@
 const css = `
     .box-raovat,
     .overlay-ad,
-    .leaderboardtop,
+    #LeaderBoardTop,
     .footer__register,
     .detail__cmain .detail-follow-gg {
         display: none !important;
