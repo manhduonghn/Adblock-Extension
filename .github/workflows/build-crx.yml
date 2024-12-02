@@ -2,7 +2,7 @@ name: Build Extension
 on:
   push:
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -10,38 +10,42 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@main
+      uses: actions/checkout@v3
 
     - name: Set up Node.js
-      uses: actions/setup-node@main
+      uses: actions/setup-node@v3
       with:
         node-version: '20'
 
     - name: Install dependencies
       run: |
-        npm install -g crx  # Cài đặt công cụ crx (không cần mật khẩu)
+        npm install -g crx  # Install the crx tool (no password needed)
 
     - name: Package the Chrome Extension
       run: |
         crx pack ./ -o ./Adblock.crx
 
-    - name: Generate date
-      run: echo "DATE=$(date +%F )" >> $GITHUB_ENV
+    - name: Generate date and version
+      run: |
+        # Generate a version based on the date and commit SHA for uniqueness
+        VERSION=$(date +%Y%m%d%H%M%S)-${GITHUB_SHA::7}
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+        echo "DATE=$(date +%F)" >> $GITHUB_ENV
 
-    - name: Delete older releases
-      uses: dev-drprasad/delete-older-releases@v0.3.4
-      with:
-        keep_latest: 0
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-       
-    - name: Release script 
+    - name: Release script
       uses: softprops/action-gh-release@v2
       with:
         files: Adblock.crx
-        name: Extension ${{ env.DATE }}
-        tag_name: ${{ env.DATE }}
+        name: Extension ${{ env.VERSION }}
+        tag_name: ${{ env.VERSION }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Delete older releases (after new release is created)
+      uses: dev-drprasad/delete-older-releases@v0.3.4
+      with:
+        keep_latest: 1  # Keep the latest release, delete older ones
+        delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
