@@ -63,32 +63,43 @@ function monitorAds() {
 
 function removeSponsoredContent() {
   try {
-    const articles = document.querySelectorAll('article.atclRdSbIn.xocbg');
+    const articles = document.querySelectorAll('article, div');
+
     articles.forEach(article => {
-      if (article.textContent.includes('Tin tài trợ')) {
+      const textContent = article.textContent || '';
+      const containsSponsoredText = textContent.includes('Tin tài trợ');
+      const containsSponsoredLink = article.querySelector('a[rel="nofollow sponsored"]');
+
+      if (containsSponsoredText || containsSponsoredLink) {
         article.remove();
       }
     });
 
     const randomIdRegex = /^[a-zA-Z]{8,12}_\d+_\d+$/;
     document.querySelectorAll('[id]').forEach(element => {
-      if (randomIdRegex.test(element.id)) {
+      if (randomIdRegex.test(element.id) && element.textContent.includes('Tin tài trợ')) {
         element.remove();
       }
     });
   } catch (error) {
-    console.error("Error while removing sponsored content:", error);
+    console.error('Error while removing sponsored content:', error);
   }
 }
 
 function monitorSponsoredContent() {
-  const observer = new MutationObserver(removeSponsoredContent);
+  const observer = new MutationObserver(() => {
+    try {
+      removeSponsoredContent();
+    } catch (error) {
+      console.error('Error while monitoring sponsored content:', error);
+    }
+  });
 
   document.addEventListener('DOMContentLoaded', () => {
     try {
       removeSponsoredContent();
     } catch (error) {
-      console.error("Error during initial sponsored content removal:", error);
+      console.error('Error during initial sponsored content removal:', error);
     }
 
     observer.observe(document.body, { childList: true, subtree: true });
