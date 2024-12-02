@@ -4,6 +4,7 @@ const css = `
     .overlay-ad,
     #LeaderBoardTop,
     .footer__register,
+    .footer__m-right,
     .detail__cmain .detail-follow-gg {
         display: none !important;
     }
