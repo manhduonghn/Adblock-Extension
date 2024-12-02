@@ -5,6 +5,7 @@ const scriptMap = {
   "vnexpress.net": "vnexpress.js",
   "youtube.com": "youtube.js",
   "phimnhanhz.com": "phimnhanh.js",
+  "24h.com.vn": "24h.js",
   "truyensex": {
     domains: ["truyensex.moe", "truyensextv1.com"],
     script: "truyensex.js"
