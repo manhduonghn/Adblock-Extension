@@ -63,19 +63,27 @@ function monitorAds() {
 
 function removeSponsoredContent() {
   try {
-    const articles = document.querySelectorAll('article.atclRdSbIn.xocbg');
+    // Chỉ xóa các bài viết có thuộc tính 'nofollow' và 'sponsored'
+    const articles = document.querySelectorAll('article');
     articles.forEach(article => {
-      if (article.textContent.includes('Tin tài trợ')) {
+      // Kiểm tra nếu có liên kết 'nofollow' và 'sponsored'
+      const adLink = article.querySelector('a[rel="nofollow"][sponsored]');
+      const sponsoredText = article.querySelector('span.tmPst.clrGr');  // Kiểm tra văn bản "Tin tài trợ"
+      
+      // Nếu phát hiện liên kết quảng cáo hoặc "Tin tài trợ", xóa bài viết
+      if (adLink || sponsoredText) {
         article.remove();
       }
     });
 
+    // Xóa các phần tử có ID ngẫu nhiên nếu cần
     const randomIdRegex = /^[a-zA-Z]{8,12}_\d+_\d+$/;
     document.querySelectorAll('[id]').forEach(element => {
       if (randomIdRegex.test(element.id)) {
         element.remove();
       }
     });
+
   } catch (error) {
     console.error("Error while removing sponsored content:", error);
   }
@@ -95,5 +103,6 @@ function monitorSponsoredContent() {
   });
 }
 
+// Bắt đầu theo dõi quảng cáo và nội dung tài trợ
 monitorAds();
 monitorSponsoredContent();
