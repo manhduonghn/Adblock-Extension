@@ -1,6 +1,6 @@
 function removeAds() {
   const ids = [
-    "banner_duoi_tin_so_6", "div_inpage_banner" , "banner-inpage"
+    "banner_duoi_tin_so_6", "div_inpage_banner", "banner-inpage"
   ];
   
   const classes = [
@@ -28,12 +28,8 @@ function removeAds() {
     try {
       const nodes = document.querySelectorAll(selector);
 
-      // Ensure nodes is iterable
-      if (nodes && nodes.forEach) {
-        nodes.forEach(node => node.remove());
-      } else {
-        Array.from(nodes).forEach(node => node.remove());
-      }
+      // Ensure nodes are iterable (fallback to array)
+      Array.from(nodes).forEach(node => node.remove());
     } catch (error) {
       console.error(`Invalid selector: ${selector}`, error);
     }
@@ -48,7 +44,7 @@ function monitorAds() {
       observer.observe(document.body, { childList: true, subtree: true });
       removeAds();
     } else {
-      setTimeout(startObserver, 50);
+      setTimeout(startObserver, 50);  // Retry after 50ms if document.body is not available
     }
   }
 
