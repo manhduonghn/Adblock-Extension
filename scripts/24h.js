@@ -1,30 +1,20 @@
 function removeAds() {
   const ids = [
-    "adslot", "gpt-ad", "admobile", "deskad", "adframe", "adleaderboard", 
-    "sponsored", "adcontainer", "ads_bottom", "ad-sidebar", "adblocker", 
-    "ad-overlay", "adblock-sidebar", "ad-vertical", "ad-footer", "ad-header", 
-    "topAdv", "div_inpage_banner"
+    "banner_duoi_tin_so_6", "div_inpage_banner" , "banner-inpage"
   ];
   
   const classes = [
-    "adswarning", "ad300", "adHeight", "special-offer", "rightAd", 
-    "ad-slot", "ad-container", "advertisement", "adnative", "wps-player__happy-inside", 
-    "ads-banner", "ad-box", "promo-ad", "banner-ad", "ad-display", 
-    "advert", "popup-ad", "adside", "adspace", "adblock", "adtop", 
-    "ad-wrapper", "advertisement-container", "ad-section", "ad-wrap", 
-    "ad-banner", "adsense", "adsbox", "ad-unit", "inline-ad", 
-    "advert-unit", "sponsored-content", "sponsored-post", "ad-background", 
-    "video-archive-ad", "sidebar-ads"
+    "m_banner_show"
   ];
   
   const elements = [
-    ".vjs-inplayer-container", "#movieplayer-box-adv", "#EPimLayerOuter", 
-    ".ad-section", ".ad-background", "#topAdv", ".sidebar-ads"
+    ".popup_ads_100wh", ".popup_ads_none", ".popup_ads"
   ];
   
   const dynamicSelectors = [
     '[id*="ADS_"][id*="container"]',
-    '[class*="module_"][class="_ads"]'
+    '[class*="module_"][class="_ads"]',
+    '[id*="google_ads_iframe"][id*="mobile"]
   ];
 
   const selectors = [
