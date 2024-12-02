@@ -8,7 +8,11 @@ function removeAds() {
   ];
   
   const elements = [
-    ".popup_ads_100wh", ".popup_ads_none", ".popup_ads"
+    ".popup_ads_100wh", ".popup_ads_none", ".popup_ads",
+    "#box_4t1_trang_chu > .mar-auto.container",
+    "#div_danh_cho_phai_dep_cot_phai",
+    ".mar-t-15.padd-b-15.padd-t-30.ttdn-24h-b",
+    ".mgbt10.mrT5.cate-24h-foot-home-2-col"
   ];
   
   const dynamicSelectors = [
