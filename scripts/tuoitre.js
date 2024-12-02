@@ -1,6 +1,7 @@
 // Inject CSS to hide ad elements
 const css = `
     .box-raovat,
+    .overlay-ad,
     .leaderboardtop,
     .footer__register {
         display: none !important;
