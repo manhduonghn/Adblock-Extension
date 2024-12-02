@@ -19,7 +19,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        npm install -g crx
+        npm install -g crx  # Cài đặt công cụ crx (không cần mật khẩu)
 
     - name: Package the Chrome Extension
       run: |
@@ -34,7 +34,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: Adblock.crx
-        name: Extension ${{ env.VERSION }}
+        name: Adblock Extension ${{ env.VERSION }}
         tag_name: ${{ env.VERSION }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
