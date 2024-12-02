@@ -14,7 +14,7 @@ function removeAds() {
   const dynamicSelectors = [
     '[id*="ADS_"][id*="container"]',
     '[class*="module_"][class="_ads"]',
-    '[id*="google_ads_iframe"][id*="mobile"]
+    '[id*="google_ads_iframe"][id*="mobile"]'
   ];
 
   const selectors = [
