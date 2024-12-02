@@ -14,49 +14,47 @@ const scriptMap = {
 // Get the current hostname
 const hostname = location.hostname;
 
-// Find the matching script for the current page
-let scriptToInject = null;
+// List of excluded hostnames
+const excludedHostnames = [
+  "revanced-nonroot.timie.workers.dev",
+  "github.com"
+];
 
-// Check if the current hostname is excluded
-const excludedHostnames = ["revanced-nonroot.timie.workers.dev"];
-if (!excludedHostnames.includes(hostname)) {
-  Object.keys(scriptMap).forEach((key) => {
-    const mapping = scriptMap[key];
-
-    if (typeof mapping === "string") {
-      // Single domain case
-      if (hostname.includes(key)) {
-        scriptToInject = mapping;
-      }
-    } else if (typeof mapping === "object" && mapping.domains) {
-      // Multiple domains case
-      if (mapping.domains.some((domain) => hostname.includes(domain))) {
-        scriptToInject = mapping.script;
-      }
-    }
-  });
+// Function to inject script
+function injectScript(scriptPath) {
+  const script = document.createElement("script");
+  script.src = scriptPath;
+  script.type = "text/javascript";
+  script.async = false; // Ensure the script runs in order
+  document.documentElement.appendChild(script);
+  console.log(`Injected script: ${scriptPath} for host: ${hostname}`);
 }
 
-// Inject the matching script if found, otherwise inject cosmetic.js
-if (scriptToInject) {
-  const scriptPath = chrome.runtime.getURL(`scripts/${scriptToInject}`);
+// If hostname is not excluded, determine script to inject
+if (!excludedHostnames.includes(hostname)) {
+  let scriptToInject = null;
 
-  // Create and inject the script
-  const script = document.createElement("script");
-  script.src = scriptPath;
-  script.type = "text/javascript";
-  script.async = false; // Ensure script runs in order
-  document.documentElement.appendChild(script);
-  
-  console.log(`Injected script: ${scriptPath} for host: ${hostname}`);
-} else if (!excludedHostnames.includes(hostname)) {
-  // If no script is found and the hostname is not excluded, run cosmetic.js
-  const scriptPath = chrome.runtime.getURL("scripts/cosmetic.js");
-  const script = document.createElement("script");
-  script.src = scriptPath;
-  script.type = "text/javascript";
-  script.async = false;
-  document.documentElement.appendChild(script);
+  for (const [key, value] of Object.entries(scriptMap)) {
+    if (typeof value === "string" && hostname === key) {
+      scriptToInject = value;
+      break; // Exit loop when match is found
+    } else if (typeof value === "object" && value.domains) {
+      if (value.domains.includes(hostname)) {
+        scriptToInject = value.script;
+        break; // Exit loop when match is found
+      }
+    }
+  }
 
-  console.log("Injected cosmetic.js for host: " + hostname);
+  if (scriptToInject) {
+    const scriptPath = chrome.runtime.getURL(`scripts/${scriptToInject}`);
+    injectScript(scriptPath);
+  } else {
+    // Default to cosmetic.js if no match found
+    const scriptPath = chrome.runtime.getURL("scripts/cosmetic.js");
+    injectScript(scriptPath);
+    console.log("No specific script found. Injected cosmetic.js.");
+  }
+} else {
+  console.log(`Hostname ${hostname} is excluded. No script injected.`);
 }
