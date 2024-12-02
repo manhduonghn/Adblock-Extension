@@ -40,53 +40,60 @@ function removeAds() {
   });
 }
 
-function removeAdsByPatterns() {
-  try {
-    // Các phần tử cần loại bỏ, căn cứ vào 'sponsored' và liên kết
-    const adsSelector = 'article.atclRdSbIn, article.xocbg';
-    const ads = document.querySelectorAll(adsSelector);
-
-    ads.forEach((article) => {
-      // Kiểm tra nếu trong phần tử có các điều kiện đặc trưng của quảng cáo
-      const adLink = article.querySelector('a[rel="nofollow"][sponsored]');
-      const adImage = article.querySelector('img[src*="cdn.24h.com.vn"]');
-      const sponsoredText = article.querySelector('span.tmPst.clrGr');
-
-      // Loại bỏ phần tử nếu phát hiện là quảng cáo
-      if (adLink || adImage || sponsoredText) {
-        article.remove();
-      }
-    });
-
-  } catch (error) {
-    console.error("Error while removing ads:", error);
-  }
-}
-
-function observeAds() {
+function monitorAds() {
   const observer = new MutationObserver(() => {
     try {
-      // Kết hợp cả hai phương thức để loại bỏ quảng cáo động và cố định
       removeAds();
-      removeAdsByPatterns();
     } catch (error) {
       console.error("Error while removing ads:", error);
     }
   });
 
+  function startObserver() {
+    if (document.body) {
+      observer.observe(document.body, { childList: true, subtree: true });
+      removeAds();
+    } else {
+      setTimeout(startObserver, 50);
+    }
+  }
+
+  startObserver();
+}
+
+function removeSponsoredContent() {
+  try {
+    const articles = document.querySelectorAll('article.atclRdSbIn.xocbg');
+    articles.forEach(article => {
+      if (article.textContent.includes('Tin tài trợ')) {
+        article.remove();
+      }
+    });
+
+    const randomIdRegex = /^[a-zA-Z]{8,12}_\d+_\d+$/;
+    document.querySelectorAll('[id]').forEach(element => {
+      if (randomIdRegex.test(element.id)) {
+        element.remove();
+      }
+    });
+  } catch (error) {
+    console.error("Error while removing sponsored content:", error);
+  }
+}
+
+function monitorSponsoredContent() {
+  const observer = new MutationObserver(removeSponsoredContent);
+
   document.addEventListener('DOMContentLoaded', () => {
     try {
-      // Gọi hàm loại bỏ quảng cáo ngay sau khi trang tải
-      removeAds();
-      removeAdsByPatterns();
+      removeSponsoredContent();
     } catch (error) {
-      console.error("Error during initial ad removal:", error);
+      console.error("Error during initial sponsored content removal:", error);
     }
 
-    // Quan sát thay đổi trong body để tiếp tục loại bỏ quảng cáo nếu có phần tử mới
     observer.observe(document.body, { childList: true, subtree: true });
   });
 }
 
-// Bắt đầu quan sát
-observeAds();
+monitorAds();
+monitorSponsoredContent();
