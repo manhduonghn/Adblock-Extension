@@ -1,7 +1,7 @@
 function removeAdsAndAttributes() {
   const elementsToHide = [
     '[class="inner_section section_wrap_poll mb20"]',
-    '[id="button-adblock"]',
+    '[id="button-adblock"]', '[class="banner-ads]',
     '[id="sync_bgu_and_masthead"]',
     '[class="item-box-cate"]',
     '[class="wrap-hd-adblock"]',
@@ -14,7 +14,7 @@ function removeAdsAndAttributes() {
     '[class="ads"]', '[class="list-link"]',
     '[class="container box-news-other-site"]',
     '[class="width_common app_info vne_app"]',
-    '[class*="section box_300_targer clearfix"]',
+    '[class*="section box_300_targer clearfix"]', 
     '[class*="newsletters_footer_mb coppy_right_info width_common"]',
     '[class*="installvneapp installvneapp--small js_installvneapp"]',
     '[id*="newsletters"]', '[id*="podcastIcon"]', '[class="inner_ads"]',
