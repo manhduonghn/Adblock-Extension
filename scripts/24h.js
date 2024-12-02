@@ -1,18 +1,20 @@
 function removeAds() {
   const ids = [
-    "div_inpage_banner"
+    "banner_duoi_tin_so_6", "div_inpage_banner" , "banner-inpage"
   ];
   
   const classes = [
+    "m_banner_show"
   ];
   
   const elements = [
-    ".popup_ads"
+    ".popup_ads_100wh", ".popup_ads_none", ".popup_ads"
   ];
   
   const dynamicSelectors = [
     '[id*="ADS_"][id*="container"]',
-    '[class*="module_"][class="_ads"]'
+    '[class*="module_"][class="_ads"]',
+    '[id*="google_ads_iframe"][id*="mobile"]'
   ];
 
   const selectors = [
