@@ -5,6 +5,8 @@ const css = `
         display: none !important;
     }
 `;
+
+// Add the defined CSS to the document
 const style = document.createElement('style');
 style.textContent = css;
 document.documentElement.appendChild(style);
