@@ -31,7 +31,7 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: ${{ env.FILENAME }}
-        name: Adblock Extension ${{ env.FILENAME }}
+        name: ${{ env.FILENAME }}
         tag_name: ${{ env.FILENAME }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
