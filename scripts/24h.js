@@ -63,21 +63,24 @@ function monitorAds() {
 
 function removeSponsoredContent() {
   try {
-    const articles = document.querySelectorAll('article, div');
+    // Loại bỏ các bài viết quảng cáo dựa trên nội dung hoặc liên kết
+    const allElements = document.querySelectorAll('article, div, span');
 
-    articles.forEach(article => {
-      const textContent = article.textContent || '';
-      const containsSponsoredText = textContent.includes('Tin tài trợ');
-      const containsSponsoredLink = article.querySelector('a[rel="nofollow sponsored"]');
+    allElements.forEach(element => {
+      const textContent = element.textContent || '';
+      const hasSponsoredText = textContent.includes('Tin tài trợ') || textContent.includes('tài trợ');
+      const hasSponsoredLink = element.querySelector('a[rel="nofollow sponsored"], a[href*="hauob.com"]');
 
-      if (containsSponsoredText || containsSponsoredLink) {
-        article.remove();
+      // Kiểm tra và xóa phần tử
+      if (hasSponsoredText || hasSponsoredLink) {
+        element.remove();
       }
     });
 
+    // Xóa các phần tử có id ngẫu nhiên
     const randomIdRegex = /^[a-zA-Z]{8,12}_\d+_\d+$/;
     document.querySelectorAll('[id]').forEach(element => {
-      if (randomIdRegex.test(element.id) && element.textContent.includes('Tin tài trợ')) {
+      if (randomIdRegex.test(element.id)) {
         element.remove();
       }
     });
@@ -87,21 +90,25 @@ function removeSponsoredContent() {
 }
 
 function monitorSponsoredContent() {
-  const observer = new MutationObserver(() => {
+  const observer = new MutationObserver(mutations => {
     try {
-      removeSponsoredContent();
+      mutations.forEach(() => {
+        removeSponsoredContent();
+      });
     } catch (error) {
-      console.error('Error while monitoring sponsored content:', error);
+      console.error('Error during mutation observer:', error);
     }
   });
 
   document.addEventListener('DOMContentLoaded', () => {
     try {
+      // Loại bỏ quảng cáo ngay khi trang vừa tải
       removeSponsoredContent();
     } catch (error) {
-      console.error('Error during initial sponsored content removal:', error);
+      console.error('Error during initial removal:', error);
     }
 
+    // Theo dõi tất cả thay đổi DOM
     observer.observe(document.body, { childList: true, subtree: true });
   });
 }
