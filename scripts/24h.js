@@ -57,10 +57,15 @@ function monitorAds() {
 
 monitorAds();
 
-// Lựa chọn tất cả các phần tử <article> có class 'atclRdSbIn' và có chứa thuộc tính rel="nofollow sponsored"
-var sponsoredArticles = document.querySelectorAll('article.atclRdSbIn[rel="nofollow sponsored"], span.imgFlt a[rel="nofollow sponsored"]');
+// Lặp qua tất cả các phần tử <article>
+var articles = document.querySelectorAll('article');
 
-// Duyệt qua và xóa các phần tử này
-sponsoredArticles.forEach(function(article) {
-    article.closest('article').remove();
+articles.forEach(function(article) {
+    // Kiểm tra nếu có liên kết với rel="nofollow sponsored"
+    var link = article.querySelector('a[rel="nofollow sponsored"]');
+    
+    // Kiểm tra nếu bài viết chứa "Tin tài trợ" trong bài viết (chứ không phải trong .ifTtr)
+    if (link && article.textContent.includes('Tin tài trợ')) {
+        article.remove(); // Xóa phần tử <article>
+    }
 });
