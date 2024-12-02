@@ -61,15 +61,15 @@ function monitorAds() {
 
 monitorAds();
 
-// Lặp qua tất cả các phần tử <article>
+// Iterates through all the elements <article> 
 var articles = document.querySelectorAll('article');
 
 articles.forEach(function(article) {
-    // Kiểm tra nếu có liên kết với rel="nofollow sponsored"
+    // Check if there is a link to rel="nofollow sponsored" 
     var link = article.querySelector('a[rel="nofollow sponsored"]');
     
-    // Kiểm tra nếu bài viết chứa "Tin tài trợ" trong bài viết (chứ không phải trong .ifTtr)
+    // Check if the article contains "Consult News" in the article
     if (link && article.textContent.includes('Tin tài trợ')) {
-        article.remove(); // Xóa phần tử <article>
+        article.remove(); // Delete the element <article> 
     }
 });
