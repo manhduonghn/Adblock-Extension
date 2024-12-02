@@ -40,27 +40,6 @@ function removeAds() {
   });
 }
 
-function monitorAds() {
-  const observer = new MutationObserver(() => {
-    try {
-      removeAds();
-    } catch (error) {
-      console.error("Error while removing ads:", error);
-    }
-  });
-
-  function startObserver() {
-    if (document.body) {
-      observer.observe(document.body, { childList: true, subtree: true });
-      removeAds();
-    } else {
-      setTimeout(startObserver, 50);
-    }
-  }
-
-  startObserver();
-}
-
 function removeAdsByPatterns() {
   try {
     // Các phần tử cần loại bỏ, căn cứ vào 'sponsored' và liên kết
@@ -85,11 +64,21 @@ function removeAdsByPatterns() {
 }
 
 function observeAds() {
-  const observer = new MutationObserver(removeAdsByPatterns);
+  const observer = new MutationObserver(() => {
+    try {
+      // Kết hợp cả hai phương thức để loại bỏ quảng cáo động và cố định
+      removeAds();
+      removeAdsByPatterns();
+    } catch (error) {
+      console.error("Error while removing ads:", error);
+    }
+  });
 
   document.addEventListener('DOMContentLoaded', () => {
     try {
-      removeAdsByPatterns();  // Gọi hàm loại bỏ quảng cáo ngay sau khi trang tải
+      // Gọi hàm loại bỏ quảng cáo ngay sau khi trang tải
+      removeAds();
+      removeAdsByPatterns();  
     } catch (error) {
       console.error("Error during initial ad removal:", error);
     }
@@ -101,4 +90,3 @@ function observeAds() {
 
 // Bắt đầu quan sát
 observeAds();
-monitorAds();
