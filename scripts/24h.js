@@ -78,7 +78,7 @@ function observeAds() {
     try {
       // Gọi hàm loại bỏ quảng cáo ngay sau khi trang tải
       removeAds();
-      removeAdsByPatterns();  
+      removeAdsByPatterns();
     } catch (error) {
       console.error("Error during initial ad removal:", error);
     }
