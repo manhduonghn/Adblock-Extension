@@ -42,6 +42,19 @@ function removeAds() {
       console.error(`Invalid selector: ${selector}`, error);
     }
   });
+
+  // Remove sponsored articles
+  var articles = document.querySelectorAll('article');
+
+  articles.forEach(function(article) {
+      // Check if there is a link to rel="nofollow sponsored"
+      var link = article.querySelector('a[rel="nofollow sponsored"]');
+      
+      // Check if the article contains "Tin tài trợ" in the article
+      if (link && article.textContent.includes('Tin tài trợ')) {
+          article.remove(); // Delete the element <article>
+      }
+  });
 }
 
 function monitorAds() {
@@ -60,16 +73,3 @@ function monitorAds() {
 }
 
 monitorAds();
-
-// Iterates through all the elements <article> 
-var articles = document.querySelectorAll('article');
-
-articles.forEach(function(article) {
-    // Check if there is a link to rel="nofollow sponsored" 
-    var link = article.querySelector('a[rel="nofollow sponsored"]');
-    
-    // Check if the article contains "Consult News" in the article
-    if (link && article.textContent.includes('Tin tài trợ')) {
-        article.remove(); // Delete the element <article> 
-    }
-});
