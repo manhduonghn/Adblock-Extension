@@ -6,7 +6,6 @@ const scriptMap = {
   "youtube.com": "youtube.js",
   "phimnhanhz.com": "phimnhanh.js",
   "truyensex": {
-    // Multiple domains point to the same script
     domains: ["truyensex.moe", "truyensextv1.com"],
     script: "truyensex.js"
   }
@@ -18,23 +17,27 @@ const hostname = location.hostname;
 // Find the matching script for the current page
 let scriptToInject = null;
 
-Object.keys(scriptMap).forEach((key) => {
-  const mapping = scriptMap[key];
+// Check if the current hostname is excluded
+const excludedHostnames = ["revanced-nonroot.timie.workers.dev"];
+if (!excludedHostnames.includes(hostname)) {
+  Object.keys(scriptMap).forEach((key) => {
+    const mapping = scriptMap[key];
 
-  if (typeof mapping === "string") {
-    // Single domain case
-    if (hostname.includes(key)) {
-      scriptToInject = mapping;
+    if (typeof mapping === "string") {
+      // Single domain case
+      if (hostname.includes(key)) {
+        scriptToInject = mapping;
+      }
+    } else if (typeof mapping === "object" && mapping.domains) {
+      // Multiple domains case
+      if (mapping.domains.some((domain) => hostname.includes(domain))) {
+        scriptToInject = mapping.script;
+      }
     }
-  } else if (typeof mapping === "object" && mapping.domains) {
-    // Multiple domains case
-    if (mapping.domains.some((domain) => hostname.includes(domain))) {
-      scriptToInject = mapping.script;
-    }
-  }
-});
+  });
+}
 
-// Inject the matching script if found
+// Inject the matching script if found, otherwise inject cosmetic.js
 if (scriptToInject) {
   const scriptPath = chrome.runtime.getURL(`scripts/${scriptToInject}`);
 
@@ -46,8 +49,8 @@ if (scriptToInject) {
   document.documentElement.appendChild(script);
   
   console.log(`Injected script: ${scriptPath} for host: ${hostname}`);
-} else {
-  // If there is no separate script, run cosmetic.js
+} else if (!excludedHostnames.includes(hostname)) {
+  // If no script is found and the hostname is not excluded, run cosmetic.js
   const scriptPath = chrome.runtime.getURL("scripts/cosmetic.js");
   const script = document.createElement("script");
   script.src = scriptPath;
