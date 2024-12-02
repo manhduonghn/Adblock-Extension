@@ -1,7 +1,7 @@
 function removeAdsAndAttributes() {
   const elementsToHide = [
     '[class="inner_section section_wrap_poll mb20"]',
-    '[id="button-adblock"]', '[class="banner-ads]',
+    '[id="button-adblock"]', '[id="supper_masthead"]',
     '[id="sync_bgu_and_masthead"]',
     '[class="item-box-cate"]',
     '[class="wrap-hd-adblock"]',
