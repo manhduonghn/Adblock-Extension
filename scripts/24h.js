@@ -1,75 +1,26 @@
-function removeAds() {
-  const ids = [
-    "banner_duoi_tin_so_6", "div_inpage_banner" , "banner-inpage"
-  ];
-  
-  const classes = [
-    "m_banner_show", "footer-24h-lhqc"
-  ];
-  
-  const elements = [
-    ".popup_ads_100wh", ".popup_ads_none", ".popup_ads",
-    "#box_4t1_trang_chu > .mar-auto.container",
-    "#div_danh_cho_phai_dep_cot_phai",
-    ".mar-t-15.padd-b-15.padd-t-30.ttdn-24h-b",
-    ".mgbt10.mrT5.cate-24h-foot-home-2-col"
-  ];
-  
-  const dynamicSelectors = [
-    '[id*="ADS_"][id*="container"]',
-    '[class*="module_"][class="_ads"]',
-    '[id*="google_ads_iframe"][id*="mobile"]'
-  ];
+// Hàm xóa quảng cáo
+function removeSponsoredElements() {
+  // 1. Xóa các thẻ <a> có `rel="sponsored"`
+  document.querySelectorAll('a[rel="sponsored"]').forEach((ad) => ad.remove());
 
-  const selectors = [
-    ...ids.map(id => `[id*="${id}"]`),
-    ...classes.map(cls => `[class*="${cls}"]`),
-    ...elements,
-    ...dynamicSelectors
-  ];
-
-  selectors.forEach(selector => {
-    try {
-      const nodes = document.querySelectorAll(selector);
-
-      // Ensure nodes is iterable
-      if (nodes && nodes.forEach) {
-        nodes.forEach(node => node.remove());
-      } else {
-        Array.from(nodes).forEach(node => node.remove());
-      }
-    } catch (error) {
-      console.error(`Invalid selector: ${selector}`, error);
+  // 2. Xóa các thẻ <span> có chứa "Tin tài trợ"
+  document.querySelectorAll('span').forEach((span) => {
+    if (span.textContent.includes("Tin tài trợ")) {
+      // Xóa phần tử cha hoặc cả vùng chứa quảng cáo
+      const parent = span.closest('div'); // Tìm thẻ cha gần nhất chứa nội dung
+      if (parent) parent.remove(); // Xóa vùng chứa nếu có
+      else span.remove(); // Nếu không có thẻ cha, chỉ xóa span
     }
-  });
-
-  // Remove sponsored articles
-  var articles = document.querySelectorAll('article');
-
-  articles.forEach(function(article) {
-      // Check if there is a link to rel="nofollow sponsored"
-      var link = article.querySelector('a[rel="nofollow sponsored"]');
-      
-      // Check if the article contains "Tin tài trợ" in the article
-      if (link && article.textContent.includes('Tin tài trợ')) {
-          article.remove(); // Delete the element <article>
-      }
   });
 }
 
-function monitorAds() {
-  const observer = new MutationObserver(removeAds);
+// Quan sát DOM để phát hiện thay đổi (lazy-loading hoặc dynamic ads)
+const observer = new MutationObserver(() => {
+  removeSponsoredElements();
+});
 
-  function startObserver() {
-    if (document.body) {
-      observer.observe(document.body, { childList: true, subtree: true });
-      removeAds();
-    } else {
-      setTimeout(startObserver, 50);
-    }
-  }
+// Bắt đầu quan sát toàn bộ body
+observer.observe(document.body, { childList: true, subtree: true });
 
-  startObserver();
-}
-
-monitorAds();
+// Chạy hàm ngay khi tải trang
+removeSponsoredElements();
