@@ -1,25 +1,71 @@
-// Hàm gỡ bỏ các phần tử chứa quảng cáo
-function removeSponsoredElements() {
-    // Tìm các thẻ <a> với thuộc tính `rel="sponsored"`
-    const sponsoredLinks = document.querySelectorAll('a[rel="sponsored"]');
-    sponsoredLinks.forEach(link => link.remove());
+// Hàm xóa các quảng cáo dựa trên id, class, hoặc nội dung
+function removeAds() {
+  const ids = [
+    "banner_duoi_tin_so_6", "div_inpage_banner", "banner-inpage"
+  ];
 
-    // Tìm các phần tử có nội dung chứa "Tin tài trợ"
-    const sponsoredTexts = document.querySelectorAll('span, div, p');
-    sponsoredTexts.forEach(element => {
-        if (element.textContent.trim().includes("Tin tài trợ")) {
-            element.remove(); // Xóa phần tử nếu nội dung chứa "Tin tài trợ"
-        }
-    });
+  const classes = [
+    "m_banner_show", "footer-24h-lhqc"
+  ];
+
+  const elements = [
+    ".popup_ads_100wh", ".popup_ads_none", ".popup_ads",
+    "#box_4t1_trang_chu > .mar-auto.container",
+    "#div_danh_cho_phai_dep_cot_phai",
+    ".mar-t-15.padd-b-15.padd-t-30.ttdn-24h-b",
+    ".mgbt10.mrT5.cate-24h-foot-home-2-col"
+  ];
+
+  const dynamicSelectors = [
+    '[id*="ADS_"][id*="container"]',
+    '[class*="module_"][class*="_ads"]',
+    '[id*="google_ads_iframe"][id*="mobile"]'
+  ];
+
+  const selectors = [
+    ...ids.map(id => `[id*="${id}"]`),
+    ...classes.map(cls => `[class*="${cls}"]`),
+    ...elements,
+    ...dynamicSelectors
+  ];
+
+  // 1. Xóa các phần tử theo các selector
+  selectors.forEach(selector => {
+    try {
+      document.querySelectorAll(selector).forEach(node => node.remove());
+    } catch (error) {
+      console.warn(`Không thể xử lý selector: ${selector}`, error);
+    }
+  });
+
+  // 2. Xóa các phần tử <a> có `rel="sponsored"`
+  document.querySelectorAll('a[rel="sponsored"]').forEach(ad => ad.remove());
+
+  // 3. Xóa các phần tử <span> có chứa "Tin tài trợ"
+  document.querySelectorAll('span').forEach(span => {
+    if (span.textContent.includes("Tin tài trợ")) {
+      const parent = span.closest('div'); // Xóa thẻ cha gần nhất nếu tồn tại
+      if (parent) parent.remove();
+      else span.remove();
+    }
+  });
 }
 
-// Sử dụng MutationObserver để xử lý phần tử được tải động
-const observer = new MutationObserver(() => {
-    removeSponsoredElements();
-});
+// Hàm khởi động MutationObserver để theo dõi các thay đổi trên DOM
+function monitorAds() {
+  const observer = new MutationObserver(() => removeAds());
 
-// Quan sát toàn bộ body để phát hiện các thay đổi trong DOM
-observer.observe(document.body, { childList: true, subtree: true });
+  function startObserver() {
+    if (document.body) {
+      observer.observe(document.body, { childList: true, subtree: true });
+      removeAds(); // Chạy ngay khi bắt đầu
+    } else {
+      setTimeout(startObserver, 50); // Đợi DOM sẵn sàng
+    }
+  }
 
-// Chạy ngay khi tải trang
-removeSponsoredElements();
+  startObserver();
+}
+
+// Gọi hàm để khởi chạy
+monitorAds();
